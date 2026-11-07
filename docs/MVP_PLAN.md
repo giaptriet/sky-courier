@@ -24,7 +24,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 |---|------|------------------------------|
 | 1.1 | ✅ Trang có khung hình dọc + bầu trời + chữ "Sky Courier" | Mở link → thấy nền trời, không lỗi |
 | 1.2 | ✅ Vẽ khinh khí cầu, rơi xuống chậm khi không chạm | Khinh khí cầu từ từ hạ xuống |
-| 1.3 | Làm **2 kiểu điều khiển** để so sánh: *chạm = phụt lửa* và *giữ = đốt liên tục*; có nút chuyển kiểu trên màn hình | Thử cả hai kiểu, giữ được độ cao với mỗi kiểu |
+| 1.3 | ✅ Làm **2 kiểu điều khiển** để so sánh: *chạm = phụt lửa* và *giữ = đốt liên tục*; có nút chuyển kiểu trên màn hình | Thử cả hai kiểu, giữ được độ cao với mỗi kiểu |
 | 1.4 | Đưa mọi con số vào `src/config.js`; người dùng thử đổi 1 số và thấy khác biệt | Đổi lực nâng → bay lên mạnh/yếu hơn |
 
 👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? **Chọn 1 trong 2 kiểu điều khiển.** Chỉnh số trong config cho tới khi thấy ổn.

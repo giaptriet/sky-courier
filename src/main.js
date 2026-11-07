@@ -3,10 +3,12 @@
 // Vòng lặp game: lặp liên tục, mỗi vòng gồm 2 việc:
 //   1. update(): tính toán (vị trí, va chạm...) — chạy đúng CONFIG.updatesPerSecond lần mỗi giây
 //   2. draw():   vẽ lại màn hình theo trạng thái hiện tại
-// Hiện có: bầu trời, tiêu đề, khinh khí cầu từ từ hạ xuống. Các bước sau thêm điều khiển, chặng...
+// Hiện có: bầu trời, tiêu đề, khinh khí cầu điều khiển được (2 kiểu: chạm / giữ). Các bước sau thêm chặng...
 
 import { CONFIG } from './config.js';
 import { createBalloon, updateBalloon, drawBalloon } from './balloon.js';
+import { createInput, takePresses } from './input.js';
+import { drawUi, hitModeButton, nextMode } from './ui.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -37,9 +39,23 @@ resize();
 
 // ---------- Cập nhật trạng thái ----------
 const balloon = createBalloon();
+let controlMode = CONFIG.controlMode; // 'tap' hoặc 'hold'
+
+// Khi nhấn: nếu trúng nút đổi kiểu thì đổi kiểu, và không tính là bay
+const input = createInput(canvas, (x, y) => {
+  if (hitModeButton(x, y)) {
+    controlMode = nextMode(controlMode);
+    return true;
+  }
+  return false;
+});
 
 function update(dt) {
-  updateBalloon(balloon, dt);
+  updateBalloon(balloon, dt, {
+    mode: controlMode,
+    held: input.held,
+    presses: takePresses(input),
+  });
 }
 
 // ---------- Vẽ ----------
@@ -64,6 +80,7 @@ function draw() {
   ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.12 + 36);
 
   drawBalloon(ctx, balloon);
+  drawUi(ctx, controlMode);
 }
 
 // ---------- Vòng lặp với bước thời gian cố định ----------
@@ -87,3 +104,6 @@ function loop(now) {
 }
 
 requestAnimationFrame(loop);
+
+// Chỉ dùng để kiểm thử tự động (đọc vị trí khinh khí cầu); không ảnh hưởng tới cách chơi.
+window.skyCourier = { balloon, getMode: () => controlMode };

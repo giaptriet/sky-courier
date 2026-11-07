@@ -1,31 +1,59 @@
 // balloon.js — khinh khí cầu: vị trí, chuyển động và cách vẽ.
 //
-// Bước 1.2: khinh khí cầu chỉ chịu "trọng lực" nên từ từ hạ xuống,
-// rồi dừng lại khi chạm mép dưới màn hình.
-// (Chạm đất = thua sẽ làm ở bước 2.2; điều khiển bay lên làm ở bước 1.3.)
+// Chuyển động:
+//   - Luôn có "trọng lực" kéo khinh khí cầu xuống từ từ.
+//   - Kiểu CHẠM: mỗi lần chạm = một lần phụt lửa, khinh khí cầu được đẩy lên một đoạn.
+//   - Kiểu GIỮ:  khi đang giữ = đốt lửa liên tục, khinh khí cầu bay lên dần; thả ra thì hạ dần.
+// Tạm thời khinh khí cầu dừng lại ở mép trên/mép dưới màn hình.
+// (Chạm đất/trần = thua sẽ làm ở bước 2.2.)
 
 import { CONFIG } from './config.js';
 
 export function createBalloon() {
   const b = CONFIG.balloon;
   return {
-    x: b.startX,   // vị trí ngang (tâm bóng)
-    y: b.startY,   // vị trí dọc (tâm bóng); số càng lớn càng ở thấp
-    vy: 0,         // vận tốc dọc; số dương = đang đi xuống
+    x: b.startX,      // vị trí ngang (tâm bóng)
+    y: b.startY,      // vị trí dọc (tâm bóng); số càng lớn càng ở thấp
+    vy: 0,            // vận tốc dọc; số dương = đang đi xuống, số âm = đang đi lên
+    flameTimer: 0,    // còn bao lâu nữa thì tắt ngọn lửa đang hiện (giây)
   };
 }
 
-// Tính vị trí mới sau một khoảng thời gian dt (giây)
-export function updateBalloon(balloon, dt) {
+// Tính vị trí mới sau một khoảng thời gian dt (giây).
+// controls = { mode: 'tap' hoặc 'hold', held: đang giữ không, presses: số lần vừa nhấn }
+export function updateBalloon(balloon, dt, controls) {
   const b = CONFIG.balloon;
 
-  // Trọng lực làm tốc độ rơi tăng dần, nhưng không vượt quá tốc độ rơi tối đa
-  // (khinh khí cầu hạ xuống nhẹ nhàng chứ không rơi như hòn đá).
-  balloon.vy = Math.min(balloon.vy + b.gravity * dt, b.maxFallSpeed);
+  if (controls.mode === 'tap') {
+    // Kiểu CHẠM: vừa nhấn → đặt ngay tốc độ đi lên
+    if (controls.presses > 0) {
+      balloon.vy = -b.tapLift;
+      balloon.flameTimer = b.flameShowTime;
+    }
+  } else {
+    // Kiểu GIỮ: đang giữ → lực nâng đẩy lên liên tục (mạnh hơn trọng lực một chút)
+    if (controls.held) {
+      balloon.vy -= b.holdLift * dt;
+      balloon.flameTimer = b.flameShowTime;
+    }
+  }
+
+  // Trọng lực luôn kéo xuống
+  balloon.vy += b.gravity * dt;
+
+  // Giới hạn tốc độ: không bay lên quá nhanh, không rơi quá nhanh
+  balloon.vy = Math.max(-b.maxRiseSpeed, Math.min(balloon.vy, b.maxFallSpeed));
   balloon.y += balloon.vy * dt;
 
-  // Tạm thời: dừng ở mép dưới để không rơi khỏi màn hình
+  balloon.flameTimer = Math.max(0, balloon.flameTimer - dt);
+
+  // Tạm thời: giữ khinh khí cầu trong màn hình
+  const highestY = b.radius;
   const lowestY = CONFIG.worldHeight - balloonBottomOffset();
+  if (balloon.y < highestY) {
+    balloon.y = highestY;
+    balloon.vy = 0;
+  }
   if (balloon.y > lowestY) {
     balloon.y = lowestY;
     balloon.vy = 0;
@@ -55,6 +83,22 @@ export function drawBalloon(ctx, balloon) {
   ctx.moveTo(x + r * 0.45, y + r * 0.85);
   ctx.lineTo(x + b.basketWidth / 2, basketTop);
   ctx.stroke();
+
+  // --- Ngọn lửa đèn khò: hiện khi đang phụt/đốt lửa ---
+  if (balloon.flameTimer > 0) {
+    const flameBottom = basketTop - 1;
+    const flameHeight = b.ropeLength + r * 0.15;
+    ctx.fillStyle = c.flameOuter;
+    ctx.beginPath();
+    ctx.moveTo(x - 5, flameBottom);
+    ctx.quadraticCurveTo(x, flameBottom - flameHeight * 1.4, x + 5, flameBottom);
+    ctx.fill();
+    ctx.fillStyle = c.flameInner;
+    ctx.beginPath();
+    ctx.moveTo(x - 2.5, flameBottom);
+    ctx.quadraticCurveTo(x, flameBottom - flameHeight * 0.9, x + 2.5, flameBottom);
+    ctx.fill();
+  }
 
   // --- Giỏ ---
   ctx.fillStyle = c.balloonBasket;
