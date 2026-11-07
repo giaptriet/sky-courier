@@ -4,6 +4,7 @@
 
 1. **`docs/GAME_DESIGN.md`** — thiết kế game. Tôn trọng nhãn [ĐÃ CHỐT] / [PROTOTYPE] / [ĐỊNH HƯỚNG] / [CÒN MỞ].
 2. **`docs/MVP_PLAN.md`** — kế hoạch bản chơi thử, đang ở bước nào.
+3. **`docs/TRAINING_LEVELS.md`** — thiết kế 5 chặng huấn luyện (khi làm phần chặng).
 
 Không làm tính năng ngoài bước hiện tại. Không tự quyết các mục [CÒN MỞ]: nếu cần một con số để chạy được,
 dùng giá trị tạm, đặt trong file cấu hình, và báo lại cho người dùng.
@@ -14,7 +15,7 @@ dùng giá trị tạm, đặt trong file cấu hình, và báo lại cho ngư�
 - Mỗi bước: nói rõ **file nào tạo/sửa**, **người dùng cần làm gì**, **kết quả mong đợi**, **cách kiểm tra bằng mắt**.
 - Không tuyên bố "đã chạy được / đã kiểm thử" nếu chưa thực sự chạy và có bằng chứng (ví dụ ảnh chụp màn hình từ trình duyệt tự động). Nói rõ phần nào chưa xác minh.
 
-## Công nghệ (đề xuất — chờ người dùng xác nhận)
+## Công nghệ (người dùng đã xác nhận 2026-11-07)
 
 - **Game web chạy trên trình duyệt điện thoại**: HTML5 Canvas + JavaScript thuần (ES modules).
 - **Không dùng framework game, không có bước build** ở giai đoạn prototype: mở `index.html` qua một máy chủ tĩnh là chơi được.
@@ -33,7 +34,7 @@ src/balloon.js      khinh khí cầu: chuyển động, va chạm
 src/level.js        nạp và vẽ chặng từ dữ liệu
 src/levels/*.js     dữ liệu từng chặng (vị trí chướng ngại, đích, lời hướng dẫn)
 src/rewind.js       ghi lại trạng thái và tua lùi khi hồi sinh
-src/input.js        chạm màn hình / chuột / phím Space
+src/input.js        chạm màn hình / chuột / phím Space; hỗ trợ 2 kiểu điều khiển (chạm / giữ), chọn trong config
 docs/               tài liệu thiết kế và kế hoạch
 ```
 
