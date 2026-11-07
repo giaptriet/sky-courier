@@ -25,7 +25,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | 1.1 | ✅ Trang có khung hình dọc + bầu trời + chữ "Sky Courier" | Mở link → thấy nền trời, không lỗi |
 | 1.2 | ✅ Vẽ khinh khí cầu, rơi xuống chậm khi không chạm | Khinh khí cầu từ từ hạ xuống |
 | 1.3 | ✅ Làm **2 kiểu điều khiển** để so sánh: *chạm = phụt lửa* và *giữ = đốt liên tục*; có nút chuyển kiểu trên màn hình | Thử cả hai kiểu, giữ được độ cao với mỗi kiểu |
-| 1.4 | ⏭️ Đưa mọi con số vào `src/config.js` (✅ đã có); người dùng thử đổi 1 số và thấy khác biệt (*người dùng chọn đi tiếp, làm sau cũng được*) | Đổi lực nâng → bay lên mạnh/yếu hơn |
+| 1.4 | ✅ Đưa mọi con số vào `src/config.js`; người dùng tự sửa trên GitHub: `gravity` 120→150, `maxFallSpeed` 120→140 | Đổi lực nâng → bay lên mạnh/yếu hơn |
 
 👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? **Chọn 1 trong 2 kiểu điều khiển** → ✅ đã chọn **Chạm** (2026-11-07). Chỉnh số trong config cho tới khi thấy ổn.
 
@@ -34,7 +34,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | # | Việc | Người dùng kiểm tra bằng mắt |
 |---|------|------------------------------|
 | 2.1 | ✅ Màn hình cuộn ngang, xuất hiện chướng ngại tĩnh (mây giông phía trên + tháp phía dưới); có màn hình chờ "chạm để bắt đầu" | Chướng ngại trôi từ phải sang trái |
-| 2.2 | Va chạm với chướng ngại / mặt đất / trần → thua, hiện "Chơi lại" | Đâm vào → dừng, có nút chơi lại |
+| 2.2 | ✅ Va chạm với chướng ngại / mặt đất / trần → **khinh khí cầu vỡ**, hiện "Chơi lại" *(làm cùng Giai đoạn 3 theo yêu cầu người dùng)* | Đâm vào → dừng, có nút chơi lại |
 | 2.3 | Chặng đọc từ file dữ liệu `src/levels/level1.js` (*file đã tạo ở 2.1; còn lại: người dùng tự sửa thử*) | Sửa vị trí 1 chướng ngại trong file → thấy thay đổi |
 | 2.4 | Đích đến (ví dụ: hộp thư/bưu điện) + thanh tiến độ + màn "Đã giao thư!" | Bay hết chặng → thấy màn hoàn thành |
 
@@ -42,11 +42,11 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 
 | # | Việc | Người dùng kiểm tra bằng mắt |
 |---|------|------------------------------|
-| 3.1 | Ghi lại vị trí khinh khí cầu vài giây gần nhất | (bên trong, chưa thấy gì) |
-| 3.2 | Va chạm → hỏi "Hồi sinh? (còn 1)" hoặc "Chơi lại" | Thấy lựa chọn sau khi đâm |
-| 3.3 | Hồi sinh → tua lùi 3 giây (giá trị tạm trong config), bất tử (nhấp nháy) | Thấy tua lại, khinh khí cầu nhấp nháy |
-| 3.4 | Bất tử tắt khi tới đúng chướng ngại đã đâm | Đến chướng ngại đó thì hết nhấp nháy, đâm lần nữa là thua |
-| 3.5 | 1 lượt/chặng, cấp lại khi chơi lại hoặc sang chặng mới | Hồi sinh lần 2 trong cùng chặng không được |
+| 3.1 | ✅ Ghi lại vị trí khinh khí cầu vài giây gần nhất | (bên trong, chưa thấy gì) |
+| 3.2 | ✅ Va chạm → hỏi "Hồi sinh? (còn 1)" hoặc "Chơi lại" | Thấy lựa chọn sau khi đâm |
+| 3.3 | ✅ Hồi sinh → tua lùi **5 giây** (giá trị tạm trong config), bất tử (nhấp nháy) | Thấy tua lại, khinh khí cầu nhấp nháy |
+| 3.4 | ✅ Bất tử tắt khi tới đúng chướng ngại đã đâm | Đến chướng ngại đó thì hết nhấp nháy, đâm lần nữa là thua |
+| 3.5 | ✅ 1 lượt/chặng, cấp lại khi chơi lại hoặc sang chặng mới | Hồi sinh lần 2 trong cùng chặng không được |
 
 👉 **Điểm dừng kiểm chứng #2**: tua lùi có dễ hiểu không? Chọn số giây tua lùi chính thức.
 
@@ -70,5 +70,5 @@ Chặng 2–5 · kho hồi sinh 3 lượt + vật phẩm · hình vẽ/âm thanh
 
 1. **Nền tảng prototype**: game web mở bằng trình duyệt điện thoại (chưa phải app).
 2. **Điều khiển**: làm cả 2 kiểu để chơi so sánh → người dùng chọn **Chạm** (khó hơn, đòi hỏi kỹ năng hơn). Đã bỏ kiểu Giữ và nút đổi kiểu.
-3. **Tua lùi**: tạm 3 giây, chỉnh sau khi chơi thử.
+3. **Tua lùi**: tạm 3 giây → người dùng đổi thành **5 giây**; khi va chạm khinh khí cầu vỡ; giữ 1 lượt/chặng và luật bất tử đã chốt.
 4. **Đăng game**: chuyển kho sang Công khai, bật GitHub Pages ngay từ bây giờ để thử từng bước trên điện thoại.

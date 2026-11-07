@@ -25,6 +25,16 @@ export const CONFIG = {
     ropeLength: 14,     // độ dài dây treo giỏ
     basketWidth: 22,    // kích thước giỏ
     basketHeight: 16,
+    hitboxScale: 0.85,  // vùng tính va chạm nhỏ hơn hình vẽ bao nhiêu (1 = bằng đúng hình; nhỏ hơn = dễ thở hơn)
+  },
+
+  // --- Vỡ và hồi sinh ---
+  revive: {
+    perLevel: 1,             // số lượt hồi sinh mỗi chặng (luật prototype đã chốt)
+    rewindSeconds: 5,        // tua lùi về bao nhiêu giây trước lúc vỡ (TẠM — người dùng chọn 5, chỉnh sau khi chơi thử)
+    rewindPlaybackSpeed: 4,  // cảnh tua ngược chạy nhanh gấp mấy lần bình thường
+    burstTime: 0.9,          // hiệu ứng vỡ kéo dài bao lâu trước khi hiện lựa chọn (giây)
+    blinkPerSecond: 8,       // khi bất tử, khinh khí cầu nhấp nháy bao nhiêu lần mỗi giây
   },
 
   // --- Chặng chơi ---
@@ -55,5 +65,11 @@ export const CONFIG = {
     ground: '#7fa65a',        // mặt đất
     groundStripe: '#6a8f48',
     cloud: 'rgba(255, 255, 255, 0.7)',
+    panel: 'rgba(27, 42, 58, 0.85)',   // khung thông báo khi vỡ
+    panelText: '#ffffff',
+    buttonPrimary: '#f6c344',          // nút chính (Hồi sinh)
+    buttonPrimaryText: '#1b2a3a',
+    buttonSecondary: '#ffffff',        // nút phụ (Chơi lại)
+    buttonSecondaryText: '#1b2a3a',
   },
 };

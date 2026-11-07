@@ -39,7 +39,9 @@ Mục tiêu trước mắt: làm **prototype nhỏ** để kiểm chứng điề
 
 - Khi dùng hồi sinh: **tua lại vài giây trước va chạm**.
 - Trong đoạn bay lại người chơi **bất tử** để chuẩn bị; bất tử **kết thúc khi gặp lại đúng chướng ngại đã gây va chạm** — lúc đó phải tự vượt qua.
-- Số giây tua lùi: **[CÒN MỞ]** — giá trị tạm cho prototype: **3 giây** (người dùng đồng ý 2026-11-07), chốt sau khi chơi thử.
+- Số giây tua lùi: **[CÒN MỞ]** — giá trị tạm cho prototype: **5 giây** (người dùng đổi từ 3 → 5 ngày 2026-11-07), chốt sau khi chơi thử.
+- Va chạm (chướng ngại, mặt đất, trần) → **khinh khí cầu vỡ** (hiệu ứng vỡ), rồi hỏi "Hồi sinh" hoặc "Chơi lại từ đầu". Hết lượt → chỉ còn "Chơi lại từ đầu" *(người dùng xác nhận 2026-11-07)*.
+- *Cách hiểu tạm của prototype, chưa phải quyết định*: nếu vỡ do đâm **đất/trần** (không có chướng ngại cụ thể), bất tử kết thúc khi bay tới **đúng chỗ đã vỡ**. Sau khi tua xong, game chờ người chơi chạm mới bay tiếp.
 
 ## 4. Phạm vi prototype đầu tiên — [PROTOTYPE]
 
@@ -65,7 +67,7 @@ Chỉ mở rộng khi prototype cho thấy trải nghiệm cốt lõi thực s�
 
 1. Xuất bản chính thức (app trên kho ứng dụng hay chỉ web). *Prototype đã chốt: game web, chơi bằng trình duyệt điện thoại, đăng qua GitHub Pages.*
 2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh.*
-3. Số giây tua lùi khi hồi sinh *(tạm 3 giây)*.
+3. Số giây tua lùi khi hồi sinh *(tạm 5 giây)*.
 4. Thiết kế cụ thể 5 chặng huấn luyện và nội dung chặng 1 *(bản nháp: `docs/TRAINING_LEVELS.md`, chờ duyệt)*.
 5. Thời điểm đưa kho hồi sinh, vật phẩm, bưu thiếp, nâng cấp, khu vực mới, thử thách ngày vào game.
 6. Cân bằng nâng cấp; cách giữ bảng xếp hạng thử thách ngày công bằng.

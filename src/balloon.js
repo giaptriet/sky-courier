@@ -3,8 +3,8 @@
 // Chuyển động (kiểu điều khiển đã chốt: CHẠM):
 //   - Luôn có "trọng lực" kéo khinh khí cầu xuống từ từ.
 //   - Mỗi lần chạm = một lần phụt lửa, khinh khí cầu được đẩy lên một đoạn.
-// Tạm thời khinh khí cầu dừng lại ở mép trên màn hình và trên mặt đất.
-// (Chạm đất/trần/chướng ngại = thua sẽ làm ở bước 2.2.)
+// Va chạm: file này chỉ cho biết "vùng va chạm" của khinh khí cầu (balloonHitbox);
+// việc kiểm tra có đâm vào gì không nằm ở level.js, xử lý vỡ/hồi sinh nằm ở main.js.
 
 import { CONFIG } from './config.js';
 
@@ -37,8 +37,11 @@ export function updateBalloon(balloon, dt, presses) {
   balloon.y += balloon.vy * dt;
 
   balloon.flameTimer = Math.max(0, balloon.flameTimer - dt);
+}
 
-  // Tạm thời: giữ khinh khí cầu trong màn hình, đứng trên mặt đất
+// Khi đang bất tử: không cho bay ra khỏi màn hình hay chui xuống đất
+export function keepInsideScreen(balloon) {
+  const b = CONFIG.balloon;
   const highestY = b.radius;
   const lowestY = CONFIG.worldHeight - CONFIG.level.groundHeight - balloonBottomOffset();
   if (balloon.y < highestY) {
@@ -51,18 +54,39 @@ export function updateBalloon(balloon, dt, presses) {
   }
 }
 
+// Vùng va chạm: một hình tròn cho thân bóng và một hình chữ nhật cho giỏ.
+// Nhỏ hơn hình vẽ một chút (hitboxScale) để sượt nhẹ không bị tính là đâm.
+export function balloonHitbox(balloon) {
+  const b = CONFIG.balloon;
+  const s = b.hitboxScale;
+  const basketTop = balloon.y + b.radius + b.ropeLength;
+  return {
+    circle: { x: balloon.x, y: balloon.y, r: b.radius * s },
+    basket: {
+      x: balloon.x - (b.basketWidth * s) / 2,
+      y: basketTop,
+      w: b.basketWidth * s,
+      h: b.basketHeight * s,
+    },
+  };
+}
+
 // Khoảng cách từ tâm bóng xuống đáy giỏ
 function balloonBottomOffset() {
   const b = CONFIG.balloon;
   return b.radius + b.ropeLength + b.basketHeight;
 }
 
-// Vẽ khinh khí cầu tại vị trí hiện tại
-export function drawBalloon(ctx, balloon) {
+// Vẽ khinh khí cầu tại vị trí hiện tại.
+// faded = true → vẽ mờ (dùng cho hiệu ứng nhấp nháy khi bất tử)
+export function drawBalloon(ctx, balloon, faded = false) {
   const b = CONFIG.balloon;
   const c = CONFIG.colors;
   const { x, y } = balloon;
   const r = b.radius;
+
+  ctx.save();
+  if (faded) ctx.globalAlpha = 0.35;
 
   // --- Dây treo: nối đáy bóng xuống giỏ ---
   const basketTop = y + r + b.ropeLength;
@@ -128,4 +152,45 @@ export function drawBalloon(ctx, balloon) {
   ctx.fillRect(x - r * 0.75 - stripeW / 2, y - r, stripeW * 0.7, r * 2.2);
   ctx.fillRect(x + r * 0.75 - stripeW * 0.35, y - r, stripeW * 0.7, r * 2.2);
   ctx.restore();
+
+  ctx.restore(); // bỏ hiệu ứng mờ
+}
+
+// Hiệu ứng vỡ: các mảnh bóng bay tung ra rồi rơi, giỏ rơi xuống.
+// t = số giây kể từ lúc vỡ. Hướng bay của các mảnh cố định (không ngẫu nhiên).
+export function drawBurst(ctx, balloon, t) {
+  const b = CONFIG.balloon;
+  const c = CONFIG.colors;
+  const { x, y } = balloon;
+  const fall = 0.5 * 400 * t * t; // rơi nhanh dần theo thời gian
+
+  // Vòng "bụp" lan ra rồi mờ đi
+  if (t < 0.3) {
+    ctx.strokeStyle = `rgba(255, 255, 255, ${1 - t / 0.3})`;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(x, y, b.radius + t * 120, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+
+  // 10 mảnh bóng bay ra theo 10 hướng
+  for (let i = 0; i < 10; i++) {
+    const angle = (i / 10) * Math.PI * 2 + 0.3;
+    const speed = 90 + (i % 3) * 30;
+    const px = x + Math.cos(angle) * speed * t;
+    const py = y + Math.sin(angle) * speed * t + fall;
+    ctx.fillStyle = i % 2 === 0 ? c.balloonMain : c.balloonStripe;
+    ctx.beginPath();
+    ctx.moveTo(px, py - 6);
+    ctx.lineTo(px + 6, py + 5);
+    ctx.lineTo(px - 5, py + 4);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Giỏ (có phong thư) rơi thẳng xuống
+  const groundY = CONFIG.worldHeight - CONFIG.level.groundHeight;
+  const basketTop = Math.min(y + b.radius + b.ropeLength + fall, groundY - b.basketHeight); // dừng trên mặt đất
+  ctx.fillStyle = c.balloonBasket;
+  ctx.fillRect(x - b.basketWidth / 2, basketTop, b.basketWidth, b.basketHeight);
 }

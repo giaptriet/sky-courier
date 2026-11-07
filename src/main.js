@@ -3,14 +3,26 @@
 // Vòng lặp game: lặp liên tục, mỗi vòng gồm 2 việc:
 //   1. update(): tính toán (vị trí, va chạm...) — chạy đúng CONFIG.updatesPerSecond lần mỗi giây
 //   2. draw():   vẽ lại màn hình theo trạng thái hiện tại
-// Hiện có: màn hình chờ (chạm để bắt đầu), khinh khí cầu điều khiển bằng cách chạm,
-// chặng 1 trôi ngang với chướng ngại. Các bước sau thêm va chạm, đích, hồi sinh...
+// Các trạng thái của game (biến state):
+//   'ready'     — màn hình chờ, chạm để bắt đầu
+//   'flying'    — đang bay
+//   'crashed'   — vừa vỡ: hiệu ứng vỡ, rồi hiện nút Hồi sinh / Chơi lại
+//   'rewinding' — đang tua lùi (sau khi bấm Hồi sinh)
+//   'resume'    — tua xong, chờ chạm để bay tiếp (đang bất tử)
 
 import { CONFIG } from './config.js';
-import { createBalloon, updateBalloon, drawBalloon } from './balloon.js';
+import {
+  createBalloon, updateBalloon, drawBalloon, drawBurst, balloonHitbox, keepInsideScreen,
+} from './balloon.js';
 import { createInput, takePresses } from './input.js';
-import { drawUi } from './ui.js';
-import { createLevel, updateLevel, drawClouds, drawObstacles, drawGround } from './level.js';
+import {
+  drawReadyScreen, drawCrashMenu, hitCrashMenu, drawRewindingText, drawResumeText,
+} from './ui.js';
+import {
+  createLevel, updateLevel, drawClouds, drawObstacles, drawGround,
+  findCollision, obstacleContactDistance,
+} from './level.js';
+import { createHistory, clearHistory, recordFrame, startRewind, stepRewind } from './rewind.js';
 import { LEVEL_1 } from './levels/level1.js';
 
 const canvas = document.getElementById('game');
@@ -40,25 +52,103 @@ function resize() {
 window.addEventListener('resize', resize);
 resize();
 
-// ---------- Cập nhật trạng thái ----------
+// ---------- Trạng thái game ----------
 const balloon = createBalloon();
 const level = createLevel(LEVEL_1);
-const input = createInput(canvas);
+const history = createHistory();
 
-// Trạng thái game: 'ready' = đang chờ lần chạm đầu tiên; 'flying' = đang bay
 let state = 'ready';
+let revivesLeft = CONFIG.revive.perLevel; // lượt hồi sinh còn lại trong chặng này
+let crashTimer = 0;       // đã bao lâu kể từ lúc vỡ (giây)
+let invincible = false;   // đang bất tử sau khi hồi sinh?
+let invincibleUntil = 0;  // bay tới quãng đường này thì hết bất tử
+let blinkTimer = 0;       // dùng cho hiệu ứng nhấp nháy
 
+// Khung "vỡ rồi" chỉ hiện sau khi hiệu ứng vỡ chạy xong
+function crashMenuVisible() {
+  return state === 'crashed' && crashTimer >= CONFIG.revive.burstTime;
+}
+
+// Mọi cú nhấn khi đang vỡ / đang tua đều dành cho nút, không tính là phụt lửa
+const input = createInput(canvas, (x, y) => {
+  if (crashMenuVisible()) {
+    const choice = hitCrashMenu(x, y, revivesLeft);
+    if (choice === 'revive') revive();
+    if (choice === 'restart') restartLevel();
+    return true;
+  }
+  return state === 'crashed' || state === 'rewinding';
+});
+
+// ---------- Các hành động ----------
+
+// Vỡ: ghi nhớ đã đâm vào đâu để biết lúc nào hết bất tử nếu hồi sinh
+function crash(hit) {
+  state = 'crashed';
+  crashTimer = 0;
+  invincibleUntil = hit.kind === 'obstacle'
+    ? obstacleContactDistance(level, hit.index) // gặp lại đúng chướng ngại đó
+    : level.distance;                           // đâm đất/trần: tới đúng chỗ vừa đâm
+}
+
+function revive() {
+  revivesLeft -= 1;
+  startRewind(history);
+  state = 'rewinding';
+}
+
+function restartLevel() {
+  Object.assign(balloon, createBalloon());
+  level.distance = 0;
+  clearHistory(history);
+  revivesLeft = CONFIG.revive.perLevel;
+  invincible = false;
+  state = 'ready';
+}
+
+// ---------- Cập nhật mỗi bước ----------
 function update(dt) {
   const presses = takePresses(input);
+  blinkTimer += dt;
 
-  if (state === 'ready') {
-    // Chờ người chơi sẵn sàng: khinh khí cầu đứng yên, cảnh chưa trôi
+  if (state === 'ready' || state === 'resume') {
+    // Chờ người chơi chạm: khinh khí cầu đứng yên, cảnh chưa trôi
     if (presses === 0) return;
     state = 'flying';
   }
 
+  if (state === 'crashed') {
+    crashTimer += dt;
+    // Trên máy tính: phím Space = bấm nút chính (Hồi sinh nếu còn lượt, không thì Chơi lại)
+    if (presses > 0 && crashMenuVisible()) {
+      if (revivesLeft > 0) revive();
+      else restartLevel();
+    }
+    return;
+  }
+
+  if (state === 'rewinding') {
+    if (stepRewind(history, level, balloon)) {
+      invincible = true;
+      state = 'resume';
+    }
+    return;
+  }
+
+  // state === 'flying'
   updateLevel(level, dt);
   updateBalloon(balloon, dt, presses);
+  recordFrame(history, level, balloon);
+
+  if (invincible && level.distance >= invincibleUntil) invincible = false;
+
+  if (invincible) {
+    keepInsideScreen(balloon); // bất tử: xuyên qua chướng ngại, nhưng không ra khỏi màn hình
+    return;
+  }
+
+  const hit = findCollision(level, balloonHitbox(balloon));
+  if (hit) crash(hit);
 }
 
 // ---------- Vẽ ----------
@@ -76,19 +166,19 @@ function draw() {
   drawClouds(ctx, level);
   drawObstacles(ctx, level);
   drawGround(ctx, level);
-  drawBalloon(ctx, balloon);
 
-  // Tiêu đề và hướng dẫn: chỉ hiện ở màn hình chờ
-  if (state === 'ready') {
-    ctx.fillStyle = CONFIG.colors.title;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = 'bold 36px system-ui, sans-serif';
-    ctx.fillText('Sky Courier', w / 2, h * 0.12);
-    ctx.font = '18px system-ui, sans-serif';
-    ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.12 + 36);
-    drawUi(ctx);
+  if (state === 'crashed') {
+    drawBurst(ctx, balloon, Math.min(crashTimer, CONFIG.revive.burstTime));
+  } else {
+    // Nhấp nháy khi bất tử
+    const blinkOff = Math.floor(blinkTimer * CONFIG.revive.blinkPerSecond * 2) % 2 === 1;
+    drawBalloon(ctx, balloon, invincible && blinkOff);
   }
+
+  if (state === 'ready') drawReadyScreen(ctx);
+  if (crashMenuVisible()) drawCrashMenu(ctx, revivesLeft);
+  if (state === 'rewinding') drawRewindingText(ctx);
+  if (state === 'resume') drawResumeText(ctx);
 }
 
 // ---------- Vòng lặp với bước thời gian cố định ----------
@@ -114,4 +204,8 @@ function loop(now) {
 requestAnimationFrame(loop);
 
 // Chỉ dùng để kiểm thử tự động (đọc vị trí khinh khí cầu); không ảnh hưởng tới cách chơi.
-window.skyCourier = { balloon, level, getState: () => state };
+window.skyCourier = {
+  balloon, level, history,
+  getState: () => state,
+  getInfo: () => ({ revivesLeft, invincible, invincibleUntil }),
+};

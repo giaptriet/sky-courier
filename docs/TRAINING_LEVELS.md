@@ -46,7 +46,7 @@
 ### Chặng 4 — "Thêm một cơ hội"
 - **Dạy**: hồi sinh tua lùi.
 - **Bố cục**: nửa đầu dễ (ôn tập), rồi **một đoạn khó rõ ràng** mà nhiều người sẽ đâm lần đầu. Khi đâm:
-  hiện giải thích *"Hồi sinh: quay lại 3 giây trước. Bạn bất tử cho tới khi gặp lại chướng ngại vừa đâm — lúc đó phải tự vượt qua"*.
+  hiện giải thích *"Hồi sinh: quay lại 5 giây trước. Bạn bất tử cho tới khi gặp lại chướng ngại vừa đâm — lúc đó phải tự vượt qua"*.
 - Nếu người chơi vượt qua mà không đâm: hiện một dòng nhắc ngắn về hồi sinh ở màn hoàn thành (không ép phải chết).
 
 ### Chặng 5 — "Hai đường bay"

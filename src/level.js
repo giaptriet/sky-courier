@@ -30,6 +30,58 @@ function toScreenX(level, x) {
   return x - level.distance + CONFIG.balloon.startX;
 }
 
+// ---------- Va chạm ----------
+
+// Kiểm tra khinh khí cầu có đâm vào gì không.
+// hitbox lấy từ balloonHitbox() trong balloon.js.
+// Trả về null nếu không đâm, hoặc { kind, index }:
+//   kind = 'obstacle' (index = số thứ tự chướng ngại trong dữ liệu chặng), 'ground' hoặc 'ceiling'
+export function findCollision(level, hitbox) {
+  const { circle, basket } = hitbox;
+
+  if (circle.y - circle.r < 0) return { kind: 'ceiling', index: -1 };
+  if (basket.y + basket.h > groundTop()) return { kind: 'ground', index: -1 };
+
+  const w = CONFIG.level.obstacleWidth;
+  const obstacles = level.data.obstacles;
+  for (let i = 0; i < obstacles.length; i++) {
+    const ob = obstacles[i];
+    const sx = toScreenX(level, ob.x);
+    if (sx > CONFIG.worldWidth || sx + w < 0) continue; // ở xa, bỏ qua
+
+    const gapTop = ob.gapCenter - ob.gapSize / 2;
+    const gapBottom = ob.gapCenter + ob.gapSize / 2;
+    const parts = [
+      { x: sx, y: 0, w, h: gapTop },                           // mây giông phía trên
+      { x: sx, y: gapBottom, w, h: groundTop() - gapBottom },  // tháp phía dưới
+    ];
+    for (const part of parts) {
+      if (circleHitsRect(circle, part) || rectHitsRect(basket, part)) {
+        return { kind: 'obstacle', index: i };
+      }
+    }
+  }
+  return null;
+}
+
+// Quãng đường (distance) mà tại đó khinh khí cầu chạm tới mép trước của chướng ngại số index
+export function obstacleContactDistance(level, index) {
+  return level.data.obstacles[index].x - CONFIG.balloon.radius;
+}
+
+function circleHitsRect(c, r) {
+  // Tìm điểm trong hình chữ nhật gần tâm hình tròn nhất, rồi đo khoảng cách
+  const nearestX = Math.max(r.x, Math.min(c.x, r.x + r.w));
+  const nearestY = Math.max(r.y, Math.min(c.y, r.y + r.h));
+  const dx = c.x - nearestX;
+  const dy = c.y - nearestY;
+  return dx * dx + dy * dy < c.r * c.r;
+}
+
+function rectHitsRect(a, b) {
+  return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+}
+
 // ---------- Vẽ ----------
 
 // Mây trang trí ở phía xa. Trôi chậm hơn cảnh gần (hiệu ứng chiều sâu).
