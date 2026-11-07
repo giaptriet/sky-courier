@@ -13,10 +13,28 @@ export const CONFIG = {
   // Số lần cập nhật mỗi giây. Cố định để chuyển động giống nhau trên mọi máy.
   updatesPerSecond: 60,
 
+  // --- Khinh khí cầu ---
+  balloon: {
+    startX: 110,        // vị trí ngang lúc bắt đầu (lệch trái để sau này nhìn thấy chướng ngại phía trước)
+    startY: 220,        // vị trí dọc lúc bắt đầu (0 = mép trên, 640 = mép dưới)
+    gravity: 60,        // trọng lực: càng lớn, tốc độ rơi tăng càng nhanh
+    maxFallSpeed: 90,   // tốc độ rơi tối đa: càng nhỏ, hạ xuống càng nhẹ nhàng
+    radius: 30,         // bán kính thân bóng
+    ropeLength: 14,     // độ dài dây treo giỏ
+    basketWidth: 22,    // kích thước giỏ
+    basketHeight: 16,
+  },
+
   // --- Màu sắc (tạm thời, sẽ thay bằng hình vẽ sau) ---
   colors: {
     skyTop: '#7ec8f2',    // màu trời phía trên
     skyBottom: '#fde7c4', // màu trời sát chân trời
     title: '#1b2a3a',     // màu chữ tiêu đề
+    balloonMain: '#e85d4a',   // màu chính của bóng
+    balloonStripe: '#f6c344', // màu sọc trên bóng
+    balloonRope: '#5a4632',   // màu dây
+    balloonBasket: '#9b6b3d', // màu giỏ mây
+    envelope: '#ffffff',      // phong thư trên giỏ
+    envelopeLine: '#9aa7b4',
   },
 };

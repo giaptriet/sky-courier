@@ -3,9 +3,10 @@
 // Vòng lặp game: lặp liên tục, mỗi vòng gồm 2 việc:
 //   1. update(): tính toán (vị trí, va chạm...) — chạy đúng CONFIG.updatesPerSecond lần mỗi giây
 //   2. draw():   vẽ lại màn hình theo trạng thái hiện tại
-// Bước 1.1 mới chỉ vẽ bầu trời và tiêu đề; các bước sau sẽ thêm khinh khí cầu, chặng...
+// Hiện có: bầu trời, tiêu đề, khinh khí cầu từ từ hạ xuống. Các bước sau thêm điều khiển, chặng...
 
 import { CONFIG } from './config.js';
+import { createBalloon, updateBalloon, drawBalloon } from './balloon.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -35,8 +36,10 @@ window.addEventListener('resize', resize);
 resize();
 
 // ---------- Cập nhật trạng thái ----------
+const balloon = createBalloon();
+
 function update(dt) {
-  // Chưa có gì để tính ở bước 1.1.
+  updateBalloon(balloon, dt);
 }
 
 // ---------- Vẽ ----------
@@ -56,9 +59,11 @@ function draw() {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.font = 'bold 36px system-ui, sans-serif';
-  ctx.fillText('Sky Courier', w / 2, h * 0.3);
+  ctx.fillText('Sky Courier', w / 2, h * 0.12);
   ctx.font = '18px system-ui, sans-serif';
-  ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.3 + 40);
+  ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.12 + 36);
+
+  drawBalloon(ctx, balloon);
 }
 
 // ---------- Vòng lặp với bước thời gian cố định ----------
