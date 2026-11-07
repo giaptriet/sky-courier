@@ -1,26 +1,17 @@
 // input.js — nhận thao tác của người chơi: chạm màn hình, chuột, phím Space.
 //
-// File này chỉ ghi lại 2 điều, rồi để các file khác quyết định ý nghĩa:
-//   - held:    người chơi có ĐANG giữ ngón tay / chuột / phím Space không
-//   - presses: số lần người chơi VỪA nhấn xuống kể từ lần cập nhật trước
+// Kiểu điều khiển đã chốt: CHẠM — mỗi lần nhấn xuống = một lần phụt lửa.
+// File này chỉ đếm số lần người chơi VỪA nhấn xuống kể từ lần cập nhật trước;
+// balloon.js quyết định khinh khí cầu phản ứng ra sao.
 //
-// Riêng khi nhấn trúng một nút trên màn hình (ví dụ nút đổi kiểu điều khiển),
-// cú nhấn đó dành cho nút, không tính là điều khiển khinh khí cầu.
+// onUiPress: hàm được gọi khi nhấn, nhận tọa độ trong thế giới game; trả về true nếu
+// cú nhấn trúng một nút trên màn hình (khi đó không tính là phụt lửa).
+// Hiện chưa có nút nào, nhưng sau này sẽ có (ví dụ nút "Chơi lại", "Hồi sinh").
 
 import { CONFIG } from './config.js';
 
-// canvas:    tấm vải vẽ của game
-// onUiPress: hàm được gọi khi nhấn, nhận tọa độ trong thế giới game;
-//            trả về true nếu cú nhấn trúng một nút (khi đó bỏ qua, không tính là bay)
-export function createInput(canvas, onUiPress) {
-  const input = { held: false, presses: 0 };
-
-  const activePointers = new Set(); // các ngón tay / chuột đang giữ
-  let spaceDown = false;
-
-  function refreshHeld() {
-    input.held = activePointers.size > 0 || spaceDown;
-  }
+export function createInput(canvas, onUiPress = () => false) {
+  const input = { presses: 0 };
 
   // Đổi tọa độ trên màn hình thật sang tọa độ thế giới game (0..360, 0..640)
   function toWorld(event) {
@@ -35,40 +26,15 @@ export function createInput(canvas, onUiPress) {
   canvas.addEventListener('pointerdown', (event) => {
     event.preventDefault();
     const { x, y } = toWorld(event);
-    if (onUiPress(x, y)) return; // nhấn trúng nút → không tính là bay
-    activePointers.add(event.pointerId);
+    if (onUiPress(x, y)) return; // nhấn trúng nút → không tính là phụt lửa
     input.presses += 1;
-    refreshHeld();
   });
-
-  // Nghe ở cả cửa sổ để thả tay ra ngoài khung game vẫn được tính là thả
-  function release(event) {
-    activePointers.delete(event.pointerId);
-    refreshHeld();
-  }
-  window.addEventListener('pointerup', release);
-  window.addEventListener('pointercancel', release);
 
   window.addEventListener('keydown', (event) => {
     if (event.code !== 'Space') return;
     event.preventDefault();
     if (event.repeat) return; // giữ phím lâu: máy tự gửi lặp lại, không tính là nhấn mới
-    spaceDown = true;
     input.presses += 1;
-    refreshHeld();
-  });
-
-  window.addEventListener('keyup', (event) => {
-    if (event.code !== 'Space') return;
-    spaceDown = false;
-    refreshHeld();
-  });
-
-  // Chuyển sang ứng dụng khác giữa chừng → coi như đã thả tay
-  window.addEventListener('blur', () => {
-    activePointers.clear();
-    spaceDown = false;
-    refreshHeld();
   });
 
   return input;

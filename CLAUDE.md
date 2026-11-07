@@ -34,7 +34,8 @@ src/balloon.js      khinh khí cầu: chuyển động, va chạm
 src/level.js        nạp và vẽ chặng từ dữ liệu
 src/levels/*.js     dữ liệu từng chặng (vị trí chướng ngại, đích, lời hướng dẫn)
 src/rewind.js       ghi lại trạng thái và tua lùi khi hồi sinh
-src/input.js        chạm màn hình / chuột / phím Space; hỗ trợ 2 kiểu điều khiển (chạm / giữ), chọn trong config
+src/input.js        chạm màn hình / chuột / phím Space (kiểu điều khiển đã chốt: chạm = phụt lửa)
+src/ui.js           chữ hướng dẫn và nút trên màn hình
 docs/               tài liệu thiết kế và kế hoạch
 ```
 

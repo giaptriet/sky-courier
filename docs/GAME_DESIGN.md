@@ -20,6 +20,13 @@ Mục tiêu trước mắt: làm **prototype nhỏ** để kiểm chứng điề
 - Độ khó tăng bằng cách **phối hợp thử thách đã biết**, đòi hỏi quan sát, căn nhịp, chọn tuyến — không chỉ tăng tốc độ hay thu hẹp khe bay. Xen kẽ chặng nhẹ để hồi nhịp.
 - Mọi chặng **phải vượt được bằng kỹ năng, không cần nâng cấp**. Cân bằng theo mức hỗ trợ tối đa người chơi có thể mang vào.
 
+## 2b. Điều khiển — [ĐÃ CHỐT 2026-11-07]
+
+- **Chạm = phụt lửa**: mỗi lần chạm (hoặc bấm chuột / phím Space), khinh khí cầu được đẩy lên một đoạn; không chạm thì hạ dần.
+- Đã chơi so sánh với kiểu "giữ = đốt lửa liên tục". Người làm game chọn kiểu chạm vì khó điều khiển hơn,
+  đòi hỏi kỹ năng hơn. Kiểu giữ đã bỏ khỏi code (còn trong lịch sử git nếu cần xem lại).
+- Các con số (trọng lực, lực phụt, tốc độ) vẫn **[CÒN MỞ]**, chỉnh trong `src/config.js` sau khi chơi thử.
+
 ## 3. Hồi sinh
 
 ### 3.1 Luật đầy đủ — [ĐÃ CHỐT, làm sau prototype]
@@ -57,7 +64,7 @@ Chỉ mở rộng khi prototype cho thấy trải nghiệm cốt lõi thực s�
 ## 6. Còn mở — [CÒN MỞ]
 
 1. Xuất bản chính thức (app trên kho ứng dụng hay chỉ web). *Prototype đã chốt: game web, chơi bằng trình duyệt điện thoại, đăng qua GitHub Pages.*
-2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Prototype sẽ làm cả 2 kiểu điều khiển (chạm = phụt lửa / giữ = đốt liên tục) để chơi so sánh rồi chọn.*
+2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh.*
 3. Số giây tua lùi khi hồi sinh *(tạm 3 giây)*.
 4. Thiết kế cụ thể 5 chặng huấn luyện và nội dung chặng 1 *(bản nháp: `docs/TRAINING_LEVELS.md`, chờ duyệt)*.
 5. Thời điểm đưa kho hồi sinh, vật phẩm, bưu thiếp, nâng cấp, khu vực mới, thử thách ngày vào game.

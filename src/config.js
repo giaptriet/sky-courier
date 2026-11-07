@@ -13,11 +13,6 @@ export const CONFIG = {
   // Số lần cập nhật mỗi giây. Cố định để chuyển động giống nhau trên mọi máy.
   updatesPerSecond: 60,
 
-  // --- Điều khiển ---
-  // Kiểu điều khiển lúc mở game: 'tap' (chạm = phụt lửa) hoặc 'hold' (giữ = đốt liên tục).
-  // Trong game có nút ở góc dưới bên phải để đổi kiểu khi đang chơi.
-  controlMode: 'tap',
-
   // --- Khinh khí cầu ---
   balloon: {
     startX: 110,        // vị trí ngang lúc bắt đầu (lệch trái để sau này nhìn thấy chướng ngại phía trước)
@@ -25,8 +20,7 @@ export const CONFIG = {
     gravity: 120,       // trọng lực: càng lớn, tốc độ rơi tăng càng nhanh
     maxFallSpeed: 120,  // tốc độ rơi tối đa: càng nhỏ, hạ xuống càng nhẹ nhàng
     maxRiseSpeed: 120,  // tốc độ bay lên tối đa
-    tapLift: 130,       // KIỂU CHẠM: mỗi lần chạm đẩy lên mạnh cỡ nào (càng lớn bay lên càng cao)
-    holdLift: 360,      // KIỂU GIỮ: lực nâng khi giữ; phải lớn hơn gravity thì mới bay lên được
+    tapLift: 130,       // mỗi lần chạm đẩy lên mạnh cỡ nào (càng lớn bay lên càng cao)
     flameShowTime: 0.15, // ngọn lửa hiện bao lâu sau mỗi lần phụt (giây)
     radius: 30,         // bán kính thân bóng
     ropeLength: 14,     // độ dài dây treo giỏ
@@ -47,7 +41,5 @@ export const CONFIG = {
     envelopeLine: '#9aa7b4',
     flameOuter: '#ff9f1c',    // ngọn lửa đèn khò
     flameInner: '#ffe066',
-    buttonFill: 'rgba(27, 42, 58, 0.8)', // nút đổi kiểu điều khiển
-    buttonText: '#ffffff',
   },
 };

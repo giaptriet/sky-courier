@@ -27,7 +27,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | 1.3 | ✅ Làm **2 kiểu điều khiển** để so sánh: *chạm = phụt lửa* và *giữ = đốt liên tục*; có nút chuyển kiểu trên màn hình | Thử cả hai kiểu, giữ được độ cao với mỗi kiểu |
 | 1.4 | Đưa mọi con số vào `src/config.js`; người dùng thử đổi 1 số và thấy khác biệt | Đổi lực nâng → bay lên mạnh/yếu hơn |
 
-👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? **Chọn 1 trong 2 kiểu điều khiển.** Chỉnh số trong config cho tới khi thấy ổn.
+👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? **Chọn 1 trong 2 kiểu điều khiển** → ✅ đã chọn **Chạm** (2026-11-07). Chỉnh số trong config cho tới khi thấy ổn.
 
 ## Giai đoạn 2 — Chặng có đầu có cuối
 
@@ -69,6 +69,6 @@ Chặng 2–5 · kho hồi sinh 3 lượt + vật phẩm · hình vẽ/âm thanh
 ## Quyết định đã nhận (2026-11-07)
 
 1. **Nền tảng prototype**: game web mở bằng trình duyệt điện thoại (chưa phải app).
-2. **Điều khiển**: làm cả 2 kiểu (chạm = phụt lửa / giữ = đốt liên tục) để chơi so sánh, chọn ở điểm dừng #1.
+2. **Điều khiển**: làm cả 2 kiểu để chơi so sánh → người dùng chọn **Chạm** (khó hơn, đòi hỏi kỹ năng hơn). Đã bỏ kiểu Giữ và nút đổi kiểu.
 3. **Tua lùi**: tạm 3 giây, chỉnh sau khi chơi thử.
 4. **Đăng game**: chuyển kho sang Công khai, bật GitHub Pages ngay từ bây giờ để thử từng bước trên điện thoại.

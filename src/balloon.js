@@ -1,9 +1,8 @@
 // balloon.js — khinh khí cầu: vị trí, chuyển động và cách vẽ.
 //
-// Chuyển động:
+// Chuyển động (kiểu điều khiển đã chốt: CHẠM):
 //   - Luôn có "trọng lực" kéo khinh khí cầu xuống từ từ.
-//   - Kiểu CHẠM: mỗi lần chạm = một lần phụt lửa, khinh khí cầu được đẩy lên một đoạn.
-//   - Kiểu GIỮ:  khi đang giữ = đốt lửa liên tục, khinh khí cầu bay lên dần; thả ra thì hạ dần.
+//   - Mỗi lần chạm = một lần phụt lửa, khinh khí cầu được đẩy lên một đoạn.
 // Tạm thời khinh khí cầu dừng lại ở mép trên/mép dưới màn hình.
 // (Chạm đất/trần = thua sẽ làm ở bước 2.2.)
 
@@ -20,22 +19,14 @@ export function createBalloon() {
 }
 
 // Tính vị trí mới sau một khoảng thời gian dt (giây).
-// controls = { mode: 'tap' hoặc 'hold', held: đang giữ không, presses: số lần vừa nhấn }
-export function updateBalloon(balloon, dt, controls) {
+// presses = số lần người chơi vừa chạm kể từ lần cập nhật trước
+export function updateBalloon(balloon, dt, presses) {
   const b = CONFIG.balloon;
 
-  if (controls.mode === 'tap') {
-    // Kiểu CHẠM: vừa nhấn → đặt ngay tốc độ đi lên
-    if (controls.presses > 0) {
-      balloon.vy = -b.tapLift;
-      balloon.flameTimer = b.flameShowTime;
-    }
-  } else {
-    // Kiểu GIỮ: đang giữ → lực nâng đẩy lên liên tục (mạnh hơn trọng lực một chút)
-    if (controls.held) {
-      balloon.vy -= b.holdLift * dt;
-      balloon.flameTimer = b.flameShowTime;
-    }
+  // Vừa chạm → phụt lửa: đặt ngay tốc độ đi lên
+  if (presses > 0) {
+    balloon.vy = -b.tapLift;
+    balloon.flameTimer = b.flameShowTime;
   }
 
   // Trọng lực luôn kéo xuống
@@ -84,7 +75,7 @@ export function drawBalloon(ctx, balloon) {
   ctx.lineTo(x + b.basketWidth / 2, basketTop);
   ctx.stroke();
 
-  // --- Ngọn lửa đèn khò: hiện khi đang phụt/đốt lửa ---
+  // --- Ngọn lửa đèn khò: hiện ngay sau mỗi lần phụt lửa ---
   if (balloon.flameTimer > 0) {
     const flameBottom = basketTop - 1;
     const flameHeight = b.ropeLength + r * 0.15;
