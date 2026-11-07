@@ -55,7 +55,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | # | Việc | Người dùng kiểm tra bằng mắt |
 |---|------|------------------------------|
 | 4.1 | Hướng dẫn ngắn đầu chặng 1 ("Chạm để làm nóng khí, bay lên") | Thấy chữ hướng dẫn, biến mất khi bắt đầu |
-| 4.2 | Đưa lên GitHub Pages | Mở link trên điện thoại chơi được |
+| 4.2 | Đưa lên GitHub Pages — *làm sớm từ sau bước 1.1 (người dùng yêu cầu)*: kho chuyển Công khai, Pages lấy từ nhánh đang làm | Mở https://giaptriet.github.io/sky-courier/ trên điện thoại chơi được |
 | 4.3 | Nhờ 2–3 người chơi thử, ghi lại: có hiểu luật không, chết ở đâu, có muốn chơi lại không | Bảng ghi chú phản hồi |
 
 👉 **Điểm dừng quyết định**: vui → làm tiếp chặng 2–5 (mỗi chặng 1 bước nhỏ). Chưa vui → chỉnh điều khiển trước, chưa mở rộng.
@@ -71,3 +71,4 @@ Chặng 2–5 · kho hồi sinh 3 lượt + vật phẩm · hình vẽ/âm thanh
 1. **Nền tảng prototype**: game web mở bằng trình duyệt điện thoại (chưa phải app).
 2. **Điều khiển**: làm cả 2 kiểu (chạm = phụt lửa / giữ = đốt liên tục) để chơi so sánh, chọn ở điểm dừng #1.
 3. **Tua lùi**: tạm 3 giây, chỉnh sau khi chơi thử.
+4. **Đăng game**: chuyển kho sang Công khai, bật GitHub Pages ngay từ bây giờ để thử từng bước trên điện thoại.
