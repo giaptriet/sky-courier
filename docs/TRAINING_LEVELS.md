@@ -1,6 +1,6 @@
-# 5 chặng huấn luyện — BẢN NHÁP, chờ người dùng duyệt
+# 5 chặng huấn luyện — ĐÃ DUYỆT (bản nháp, 2026-11-07)
 
-> Trạng thái: **đề xuất của Claude**, chưa phải quyết định. Mọi con số (độ dài, khoảng cách) là giá trị tạm,
+> Trạng thái: người dùng **đã duyệt hướng chung** (trả lời "ok" ngày 2026-11-07). Chi tiết vẫn có thể chỉnh sau khi chơi thử. Mọi con số (độ dài, khoảng cách) là giá trị tạm,
 > sẽ đặt trong file dữ liệu chặng và chỉnh sau khi chơi thử.
 > Chỉ dùng các yếu tố có trong phạm vi prototype (`docs/GAME_DESIGN.md` mục 4): bay, chướng ngại tĩnh,
 > đích, hồi sinh tua lùi 1 lượt/chặng. Không có vật phẩm, kho hồi sinh, nâng cấp, gió.
@@ -54,7 +54,9 @@
 - **Bố cục**: ôn lại chặng 2–3, một ngã rẽ, đoạn kết dễ → đích. Là "bài thi tốt nghiệp".
 - **Hướng dẫn**: *"Chọn đường bạn tự tin nhất"*.
 
-## Câu hỏi cho người dùng khi duyệt
+## Câu hỏi còn mở (người dùng duyệt "ok", tạm giữ như bản nháp)
+
+Tạm hiểu: giữ chướng ngại tĩnh, giữ ngã rẽ ở chặng 5, bối cảnh quyết sau. Hỏi lại khi chơi thử xong.
 
 1. 5 chặng chỉ dùng chướng ngại tĩnh có đủ hấp dẫn không, hay bạn muốn thêm **một yếu tố mới** (ví dụ gió đẩy, chướng ngại di chuyển)? Nếu thêm, đó là quyết định của bạn — sẽ ghi vào `GAME_DESIGN.md`.
 2. Chặng 5 có tuyến mạo hiểm mà **chưa có phần thưởng** (vì prototype chưa có vật phẩm) — chấp nhận, hay bỏ ngã rẽ cho tới khi có vật phẩm?
