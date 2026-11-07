@@ -1,0 +1,73 @@
+# Kế hoạch bản chơi thử (MVP)
+
+Mục tiêu MVP: **chơi được chặng 1 trên điện thoại qua một đường link**, đủ để trả lời 2 câu hỏi:
+1. Điều khiển khinh khí cầu có vui không?
+2. Luật (bay đến đích, va chạm, hồi sinh tua lùi) có dễ hiểu không?
+
+Phạm vi theo `docs/GAME_DESIGN.md` mục 4. Không làm kho hồi sinh, vật phẩm, bưu thiếp, nâng cấp, khu vực mới, thử thách ngày.
+
+Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
+
+---
+
+## Giai đoạn 0 — Chuẩn bị (không code)
+
+| # | Việc | Trạng thái |
+|---|------|-----------|
+| 0.1 | Viết gọn thiết kế (`docs/GAME_DESIGN.md`), quy tắc (`CLAUDE.md`), kế hoạch này | ✅ |
+| 0.2 | Người dùng xác nhận công nghệ + 2 câu hỏi mở (xem cuối file) | ⬜ |
+| 0.3 | **Thiết kế trên giấy 5 chặng huấn luyện**: mỗi chặng dạy gì, chướng ngại nào, độ dài, lời hướng dẫn. Người dùng duyệt trước khi code | ⬜ |
+
+## Giai đoạn 1 — Khinh khí cầu bay được
+
+| # | Việc | Người dùng kiểm tra bằng mắt |
+|---|------|------------------------------|
+| 1.1 | Trang trắng có khung hình dọc + bầu trời + chữ "Sky Courier" | Mở link → thấy nền trời, không lỗi |
+| 1.2 | Vẽ khinh khí cầu, rơi xuống chậm khi không chạm | Khinh khí cầu từ từ hạ xuống |
+| 1.3 | Chạm/Space → khinh khí cầu bay lên | Chạm nhiều lần giữ được độ cao |
+| 1.4 | Đưa mọi con số vào `src/config.js`; người dùng thử đổi 1 số và thấy khác biệt | Đổi lực nâng → bay lên mạnh/yếu hơn |
+
+👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? Chỉnh số trong config cho tới khi thấy ổn.
+
+## Giai đoạn 2 — Chặng có đầu có cuối
+
+| # | Việc | Người dùng kiểm tra bằng mắt |
+|---|------|------------------------------|
+| 2.1 | Màn hình cuộn ngang, xuất hiện chướng ngại tĩnh (hình khối đơn giản) | Chướng ngại trôi từ phải sang trái |
+| 2.2 | Va chạm với chướng ngại / mặt đất / trần → thua, hiện "Chơi lại" | Đâm vào → dừng, có nút chơi lại |
+| 2.3 | Chặng đọc từ file dữ liệu `src/levels/level1.js` | Sửa vị trí 1 chướng ngại trong file → thấy thay đổi |
+| 2.4 | Đích đến (ví dụ: hộp thư/bưu điện) + thanh tiến độ + màn "Đã giao thư!" | Bay hết chặng → thấy màn hoàn thành |
+
+## Giai đoạn 3 — Hồi sinh tua lùi (phiên bản prototype)
+
+| # | Việc | Người dùng kiểm tra bằng mắt |
+|---|------|------------------------------|
+| 3.1 | Ghi lại vị trí khinh khí cầu vài giây gần nhất | (bên trong, chưa thấy gì) |
+| 3.2 | Va chạm → hỏi "Hồi sinh? (còn 1)" hoặc "Chơi lại" | Thấy lựa chọn sau khi đâm |
+| 3.3 | Hồi sinh → tua lùi N giây (giá trị tạm trong config), bất tử (nhấp nháy) | Thấy tua lại, khinh khí cầu nhấp nháy |
+| 3.4 | Bất tử tắt khi tới đúng chướng ngại đã đâm | Đến chướng ngại đó thì hết nhấp nháy, đâm lần nữa là thua |
+| 3.5 | 1 lượt/chặng, cấp lại khi chơi lại hoặc sang chặng mới | Hồi sinh lần 2 trong cùng chặng không được |
+
+👉 **Điểm dừng kiểm chứng #2**: tua lùi có dễ hiểu không? Chọn số giây tua lùi chính thức.
+
+## Giai đoạn 4 — Chơi thử thật trên điện thoại
+
+| # | Việc | Người dùng kiểm tra bằng mắt |
+|---|------|------------------------------|
+| 4.1 | Hướng dẫn ngắn đầu chặng 1 ("Chạm để làm nóng khí, bay lên") | Thấy chữ hướng dẫn, biến mất khi bắt đầu |
+| 4.2 | Đưa lên GitHub Pages | Mở link trên điện thoại chơi được |
+| 4.3 | Nhờ 2–3 người chơi thử, ghi lại: có hiểu luật không, chết ở đâu, có muốn chơi lại không | Bảng ghi chú phản hồi |
+
+👉 **Điểm dừng quyết định**: vui → làm tiếp chặng 2–5 (mỗi chặng 1 bước nhỏ). Chưa vui → chỉnh điều khiển trước, chưa mở rộng.
+
+## Sau MVP (chưa lên lịch)
+
+Chặng 2–5 · kho hồi sinh 3 lượt + vật phẩm · hình vẽ/âm thanh thật · rồi mới tới các mục [ĐỊNH HƯỚNG].
+
+---
+
+## Câu hỏi đang chờ người dùng trả lời
+
+1. **Nền tảng**: chấp nhận bản thử là game web mở bằng trình duyệt điện thoại (chưa phải app trên CH Play/App Store)?
+2. **Kiểu điều khiển** (thử nghiệm ở bước 1.3): *chạm = một lần phụt lửa bay lên* hay *giữ ngón tay = đốt lửa liên tục, thả ra = hạ dần*?
+3. **Số giây tua lùi tạm**: dùng 3 giây để bắt đầu, chỉnh sau khi chơi thử?
