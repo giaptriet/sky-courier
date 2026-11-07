@@ -3,8 +3,8 @@
 // Chuyển động (kiểu điều khiển đã chốt: CHẠM):
 //   - Luôn có "trọng lực" kéo khinh khí cầu xuống từ từ.
 //   - Mỗi lần chạm = một lần phụt lửa, khinh khí cầu được đẩy lên một đoạn.
-// Tạm thời khinh khí cầu dừng lại ở mép trên/mép dưới màn hình.
-// (Chạm đất/trần = thua sẽ làm ở bước 2.2.)
+// Tạm thời khinh khí cầu dừng lại ở mép trên màn hình và trên mặt đất.
+// (Chạm đất/trần/chướng ngại = thua sẽ làm ở bước 2.2.)
 
 import { CONFIG } from './config.js';
 
@@ -32,15 +32,15 @@ export function updateBalloon(balloon, dt, presses) {
   // Trọng lực luôn kéo xuống
   balloon.vy += b.gravity * dt;
 
-  // Giới hạn tốc độ: không bay lên quá nhanh, không rơi quá nhanh
-  balloon.vy = Math.max(-b.maxRiseSpeed, Math.min(balloon.vy, b.maxFallSpeed));
+  // Giới hạn tốc độ rơi: hạ xuống nhẹ nhàng, không rơi như hòn đá
+  balloon.vy = Math.min(balloon.vy, b.maxFallSpeed);
   balloon.y += balloon.vy * dt;
 
   balloon.flameTimer = Math.max(0, balloon.flameTimer - dt);
 
-  // Tạm thời: giữ khinh khí cầu trong màn hình
+  // Tạm thời: giữ khinh khí cầu trong màn hình, đứng trên mặt đất
   const highestY = b.radius;
-  const lowestY = CONFIG.worldHeight - balloonBottomOffset();
+  const lowestY = CONFIG.worldHeight - CONFIG.level.groundHeight - balloonBottomOffset();
   if (balloon.y < highestY) {
     balloon.y = highestY;
     balloon.vy = 0;

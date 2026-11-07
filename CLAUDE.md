@@ -31,7 +31,7 @@ index.html          trang chứa game
 src/main.js         khởi động, vòng lặp game
 src/config.js       MỌI con số tinh chỉnh (trọng lực, lực nâng, tốc độ, số giây tua lùi...)
 src/balloon.js      khinh khí cầu: chuyển động, va chạm
-src/level.js        nạp và vẽ chặng từ dữ liệu
+src/level.js        cuộn ngang, vẽ chướng ngại/mặt đất/mây từ dữ liệu chặng
 src/levels/*.js     dữ liệu từng chặng (vị trí chướng ngại, đích, lời hướng dẫn)
 src/rewind.js       ghi lại trạng thái và tua lùi khi hồi sinh
 src/input.js        chạm màn hình / chuột / phím Space (kiểu điều khiển đã chốt: chạm = phụt lửa)

@@ -25,7 +25,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | 1.1 | ✅ Trang có khung hình dọc + bầu trời + chữ "Sky Courier" | Mở link → thấy nền trời, không lỗi |
 | 1.2 | ✅ Vẽ khinh khí cầu, rơi xuống chậm khi không chạm | Khinh khí cầu từ từ hạ xuống |
 | 1.3 | ✅ Làm **2 kiểu điều khiển** để so sánh: *chạm = phụt lửa* và *giữ = đốt liên tục*; có nút chuyển kiểu trên màn hình | Thử cả hai kiểu, giữ được độ cao với mỗi kiểu |
-| 1.4 | Đưa mọi con số vào `src/config.js`; người dùng thử đổi 1 số và thấy khác biệt | Đổi lực nâng → bay lên mạnh/yếu hơn |
+| 1.4 | ⏭️ Đưa mọi con số vào `src/config.js` (✅ đã có); người dùng thử đổi 1 số và thấy khác biệt (*người dùng chọn đi tiếp, làm sau cũng được*) | Đổi lực nâng → bay lên mạnh/yếu hơn |
 
 👉 **Điểm dừng kiểm chứng #1**: cảm giác bay đã dễ chịu chưa? **Chọn 1 trong 2 kiểu điều khiển** → ✅ đã chọn **Chạm** (2026-11-07). Chỉnh số trong config cho tới khi thấy ổn.
 
@@ -33,9 +33,9 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 
 | # | Việc | Người dùng kiểm tra bằng mắt |
 |---|------|------------------------------|
-| 2.1 | Màn hình cuộn ngang, xuất hiện chướng ngại tĩnh (hình khối đơn giản) | Chướng ngại trôi từ phải sang trái |
+| 2.1 | ✅ Màn hình cuộn ngang, xuất hiện chướng ngại tĩnh (mây giông phía trên + tháp phía dưới); có màn hình chờ "chạm để bắt đầu" | Chướng ngại trôi từ phải sang trái |
 | 2.2 | Va chạm với chướng ngại / mặt đất / trần → thua, hiện "Chơi lại" | Đâm vào → dừng, có nút chơi lại |
-| 2.3 | Chặng đọc từ file dữ liệu `src/levels/level1.js` | Sửa vị trí 1 chướng ngại trong file → thấy thay đổi |
+| 2.3 | Chặng đọc từ file dữ liệu `src/levels/level1.js` (*file đã tạo ở 2.1; còn lại: người dùng tự sửa thử*) | Sửa vị trí 1 chướng ngại trong file → thấy thay đổi |
 | 2.4 | Đích đến (ví dụ: hộp thư/bưu điện) + thanh tiến độ + màn "Đã giao thư!" | Bay hết chặng → thấy màn hoàn thành |
 
 ## Giai đoạn 3 — Hồi sinh tua lùi (phiên bản prototype)

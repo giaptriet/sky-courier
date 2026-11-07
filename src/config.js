@@ -19,13 +19,20 @@ export const CONFIG = {
     startY: 260,        // vị trí dọc lúc bắt đầu (0 = mép trên, 640 = mép dưới)
     gravity: 120,       // trọng lực: càng lớn, tốc độ rơi tăng càng nhanh
     maxFallSpeed: 120,  // tốc độ rơi tối đa: càng nhỏ, hạ xuống càng nhẹ nhàng
-    maxRiseSpeed: 120,  // tốc độ bay lên tối đa
     tapLift: 130,       // mỗi lần chạm đẩy lên mạnh cỡ nào (càng lớn bay lên càng cao)
     flameShowTime: 0.15, // ngọn lửa hiện bao lâu sau mỗi lần phụt (giây)
     radius: 30,         // bán kính thân bóng
     ropeLength: 14,     // độ dài dây treo giỏ
     basketWidth: 22,    // kích thước giỏ
     basketHeight: 16,
+  },
+
+  // --- Chặng chơi ---
+  level: {
+    scrollSpeed: 90,        // cảnh vật trôi bao nhiêu đơn vị mỗi giây (càng lớn bay càng nhanh)
+    obstacleWidth: 56,      // bề ngang mỗi chướng ngại
+    groundHeight: 40,       // độ dày mặt đất ở đáy màn hình
+    cloudSpeedFactor: 0.3,  // mây ở xa trôi chậm bằng mấy phần so với cảnh gần
   },
 
   // --- Màu sắc (tạm thời, sẽ thay bằng hình vẽ sau) ---
@@ -41,5 +48,12 @@ export const CONFIG = {
     envelopeLine: '#9aa7b4',
     flameOuter: '#ff9f1c',    // ngọn lửa đèn khò
     flameInner: '#ffe066',
+    stormCloud: '#5f6b7a',    // mây giông (chướng ngại phía trên)
+    towerWall: '#d9c6a5',     // tháp (chướng ngại phía dưới)
+    towerRoof: '#b5523b',
+    towerWindow: '#6b5a45',
+    ground: '#7fa65a',        // mặt đất
+    groundStripe: '#6a8f48',
+    cloud: 'rgba(255, 255, 255, 0.7)',
   },
 };

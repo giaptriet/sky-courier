@@ -3,12 +3,15 @@
 // Vòng lặp game: lặp liên tục, mỗi vòng gồm 2 việc:
 //   1. update(): tính toán (vị trí, va chạm...) — chạy đúng CONFIG.updatesPerSecond lần mỗi giây
 //   2. draw():   vẽ lại màn hình theo trạng thái hiện tại
-// Hiện có: bầu trời, tiêu đề, khinh khí cầu điều khiển bằng cách chạm. Các bước sau thêm chặng...
+// Hiện có: màn hình chờ (chạm để bắt đầu), khinh khí cầu điều khiển bằng cách chạm,
+// chặng 1 trôi ngang với chướng ngại. Các bước sau thêm va chạm, đích, hồi sinh...
 
 import { CONFIG } from './config.js';
 import { createBalloon, updateBalloon, drawBalloon } from './balloon.js';
 import { createInput, takePresses } from './input.js';
 import { drawUi } from './ui.js';
+import { createLevel, updateLevel, drawClouds, drawObstacles, drawGround } from './level.js';
+import { LEVEL_1 } from './levels/level1.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -39,10 +42,23 @@ resize();
 
 // ---------- Cập nhật trạng thái ----------
 const balloon = createBalloon();
+const level = createLevel(LEVEL_1);
 const input = createInput(canvas);
 
+// Trạng thái game: 'ready' = đang chờ lần chạm đầu tiên; 'flying' = đang bay
+let state = 'ready';
+
 function update(dt) {
-  updateBalloon(balloon, dt, takePresses(input));
+  const presses = takePresses(input);
+
+  if (state === 'ready') {
+    // Chờ người chơi sẵn sàng: khinh khí cầu đứng yên, cảnh chưa trôi
+    if (presses === 0) return;
+    state = 'flying';
+  }
+
+  updateLevel(level, dt);
+  updateBalloon(balloon, dt, presses);
 }
 
 // ---------- Vẽ ----------
@@ -57,17 +73,22 @@ function draw() {
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, w, h);
 
-  // Tiêu đề
-  ctx.fillStyle = CONFIG.colors.title;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = 'bold 36px system-ui, sans-serif';
-  ctx.fillText('Sky Courier', w / 2, h * 0.12);
-  ctx.font = '18px system-ui, sans-serif';
-  ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.12 + 36);
-
+  drawClouds(ctx, level);
+  drawObstacles(ctx, level);
+  drawGround(ctx, level);
   drawBalloon(ctx, balloon);
-  drawUi(ctx);
+
+  // Tiêu đề và hướng dẫn: chỉ hiện ở màn hình chờ
+  if (state === 'ready') {
+    ctx.fillStyle = CONFIG.colors.title;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 36px system-ui, sans-serif';
+    ctx.fillText('Sky Courier', w / 2, h * 0.12);
+    ctx.font = '18px system-ui, sans-serif';
+    ctx.fillText('Khinh khí cầu giao thư', w / 2, h * 0.12 + 36);
+    drawUi(ctx);
+  }
 }
 
 // ---------- Vòng lặp với bước thời gian cố định ----------
@@ -93,4 +114,4 @@ function loop(now) {
 requestAnimationFrame(loop);
 
 // Chỉ dùng để kiểm thử tự động (đọc vị trí khinh khí cầu); không ảnh hưởng tới cách chơi.
-window.skyCourier = { balloon };
+window.skyCourier = { balloon, level, getState: () => state };
