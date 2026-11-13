@@ -17,7 +17,7 @@
 
 | Chặng | Dạy điều gì | Độ dài tạm | Độ khó |
 |---|---|---|---|
-| 1 | Điều khiển cơ bản + bay tới đích | ~30 giây | Rất dễ |
+| 1 | Điều khiển cơ bản + đáp xuống bưu cục | ~20 giây | Rất dễ |
 | 2 | Né chướng ngại, va chạm là thua | ~40 giây | Dễ |
 | 3 | Căn nhịp: khe bay đổi độ cao liên tục | ~45 giây | Dễ – vừa |
 | 4 | Hồi sinh tua lùi | ~45 giây | Vừa |
@@ -28,9 +28,10 @@
 ### Chặng 1 — "Chuyến thư đầu tiên"
 - **Dạy**: chạm/giữ để làm nóng khí → bay lên; thả ra → hạ xuống; đừng chạm đất hoặc bay quá cao.
 - **Bố cục**:
-  1. 0–10 s: trời trống, chỉ có mặt đất và giới hạn trần. Hướng dẫn: *"Chạm để làm nóng khí, bay lên"*.
-  2. 10–20 s: vài cột thấp/cao **khe rất rộng**, cùng một độ cao → làm quen việc giữ độ cao.
-  3. 20–27 s: khoảng trống → **hạ xuống đáp vào sân bưu cục** (đích). Có biển "ĐÁP Ở ĐÂY".
+  1. 0–5 s: trời trống ngắn, chỉ có mặt đất và giới hạn trần. Hướng dẫn: *"Chạm để bắt đầu · mỗi lần chạm = phụt lửa"*.
+  2. 5–16 s: 4 chướng ngại **khe rất rộng**, cùng một độ cao → làm quen việc giữ độ cao.
+  3. 16–19 s: khoảng trống ngắn → **hạ xuống đáp vào sân bưu cục** (đích). Có biển "ĐÁP Ở ĐÂY".
+- **2026-11-13**: người dùng yêu cầu thu ngắn đoạn trống ở đầu (10 s → 5 s) và trước bưu cục (7 s → 3 s). Chạy thử tự động: cả chặng ~20 s; sau chướng ngại cuối có khoảng 1,4 s để bắt đầu hạ mà vẫn đáp trúng sân.
 - **Lưu ý (2026-11-13)**: luật đáp ở bưu cục khiến chặng 1 dạy **2 điều** (điều khiển + đáp). Cần xem khi chơi thử người mới có bị quá tải không; nếu có, cân nhắc nới sân rộng hơn ở chặng 1.
 - **Mục tiêu kiểm chứng**: người chưa chơi bao giờ có tự hiểu cách điều khiển (chạm = phụt lửa) không, và có thấy quá khó không.
 
