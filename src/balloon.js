@@ -29,8 +29,10 @@ export function updateBalloon(balloon, dt, presses) {
     balloon.flameTimer = b.flameShowTime;
   }
 
-  // Trọng lực luôn kéo xuống
-  balloon.vy += b.gravity * dt;
+  // Trọng lực luôn kéo xuống. Khi đang rơi dùng trọng lực mạnh hơn (fallGravity)
+  // để khinh khí cầu rơi nhanh gần bằng tốc độ bay lên, mà không làm cú phụt yếu đi.
+  const pull = balloon.vy < 0 ? b.gravity : b.fallGravity;
+  balloon.vy += pull * dt;
 
   // Giới hạn tốc độ rơi: hạ xuống nhẹ nhàng, không rơi như hòn đá
   balloon.vy = Math.min(balloon.vy, b.maxFallSpeed);
