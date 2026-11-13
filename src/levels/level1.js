@@ -7,7 +7,10 @@
 //               (scrollSpeed trong config.js), nên x: 900 ≈ gặp sau 10 giây.
 //   gapCenter = độ cao TÂM của khe bay (0 = mép trên màn hình, 600 = mặt đất).
 //   gapSize   = khe bay rộng bao nhiêu. Khinh khí cầu cao khoảng 90, nên khe 250 là rất rộng.
-//   finishX   = vị trí khu vực nhận thư (bưu điện). Bay tới đây là hoàn thành chặng.
+//   landing   = sân bưu cục ở cuối chặng: x = mép trái của sân, width = sân rộng bao nhiêu.
+//               Phải ĐÁP khinh khí cầu xuống trong sân mới giao được thư.
+//               Chạm đất ngoài sân = vỡ. Bay vượt qua sân = được đi tiếp nhưng thư chưa giao.
+//               Sân càng hẹp càng khó đáp (giỏ khinh khí cầu rộng khoảng 20).
 // Mỗi chướng ngại gồm mây giông phía trên và một tòa tháp phía dưới, chừa khe ở giữa.
 
 export const LEVEL_1 = {
@@ -22,8 +25,8 @@ export const LEVEL_1 = {
     { x: 1500, gapCenter: 320, gapSize: 250 },
     { x: 1800, gapCenter: 320, gapSize: 250 },
 
-    // 20–28 giây: trời trống để hồi nhịp, rồi tới khu vực nhận thư
+    // 20–27 giây: trời trống để hồi nhịp, rồi hạ dần xuống sân bưu cục
   ],
 
-  finishX: 2500, // ≈ 28 giây bay
+  landing: { x: 2450, width: 150 }, // ≈ 27 giây bay; sân rộng 150 ≈ 1,7 giây để đáp
 };

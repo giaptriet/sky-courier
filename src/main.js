@@ -9,7 +9,8 @@
 //   'crashed'   — vừa vỡ: hiệu ứng vỡ, rồi hiện nút Hồi sinh / Chơi lại
 //   'rewinding' — đang tua lùi (sau khi bấm Hồi sinh)
 //   'resume'    — tua xong, chờ chạm để bay tiếp (đang bất tử)
-//   'delivered' — đã tới khu vực nhận thư: lá thư bay vào hòm thư, rồi hiện "Đã giao thư!"
+//   'delivered' — đã đáp đúng sân bưu cục: lá thư bay vào hòm thư, rồi hiện "Đã giao thư!"
+//   'missed'    — bay vượt qua bưu cục mà không đáp: được đi tiếp nhưng thư chưa giao
 
 import { CONFIG } from './config.js';
 import {
@@ -18,12 +19,12 @@ import {
 import { createInput, takePresses } from './input.js';
 import {
   drawReadyScreen, drawCrashMenu, hitCrashMenu, drawRewindingText, drawResumeText,
-  drawProgressBar, drawDeliveredPanel, hitDeliveredPanel,
+  drawProgressBar, drawDeliveredPanel, drawMissedPanel, hitReplayButton,
 } from './ui.js';
 import {
   createLevel, updateLevel, drawClouds, drawObstacles, drawGround,
   findCollision, obstacleContactDistance,
-  drawFinish, reachedFinish, levelProgress, mailboxSlot,
+  drawPostOffice, touchesGround, isOverLandingPad, passedLandingPad, levelProgress, mailboxSlot,
 } from './level.js';
 import { createHistory, clearHistory, recordFrame, startRewind, stepRewind } from './rewind.js';
 import { LEVEL_1 } from './levels/level1.js';
@@ -66,10 +67,12 @@ let crashTimer = 0;       // đã bao lâu kể từ lúc vỡ (giây)
 let invincible = false;   // đang bất tử sau khi hồi sinh?
 let invincibleUntil = 0;  // bay tới quãng đường này thì hết bất tử
 let blinkTimer = 0;       // dùng cho hiệu ứng nhấp nháy
-let deliveredTimer = 0;   // đã bao lâu kể từ lúc tới khu vực nhận thư (giây)
+let deliveredTimer = 0;   // đã bao lâu kể từ lúc đáp xuống sân bưu cục (giây)
 
-// Khung "Đã giao thư!" hiện sau khi lá thư bay vào hòm thư xong
-function deliveredPanelVisible() {
+// Khung kết thúc chặng: "Đã giao thư!" hiện sau khi lá thư bay vào hòm thư xong;
+// "Bay qua bưu cục rồi!" hiện ngay.
+function endPanelVisible() {
+  if (state === 'missed') return true;
   return state === 'delivered' && deliveredTimer >= CONFIG.level.letterFlyTime;
 }
 
@@ -86,8 +89,8 @@ const input = createInput(canvas, (x, y) => {
     if (choice === 'restart') restartLevel();
     return true;
   }
-  if (deliveredPanelVisible()) {
-    if (hitDeliveredPanel(x, y)) restartLevel();
+  if (endPanelVisible()) {
+    if (hitReplayButton(x, y)) restartLevel();
     return true;
   }
   return state === 'crashed' || state === 'rewinding' || state === 'delivered';
@@ -140,10 +143,10 @@ function update(dt) {
     return;
   }
 
-  if (state === 'delivered') {
+  if (state === 'delivered' || state === 'missed') {
     deliveredTimer += dt;
     // Trên máy tính: phím Space = Chơi lại chặng
-    if (presses > 0 && deliveredPanelVisible()) restartLevel();
+    if (presses > 0 && endPanelVisible()) restartLevel();
     return;
   }
 
@@ -160,12 +163,22 @@ function update(dt) {
   updateBalloon(balloon, dt, presses);
   recordFrame(history, level, balloon);
 
-  // Tới khu vực nhận thư → hoàn thành chặng
-  if (reachedFinish(level)) {
-    level.distance = level.data.finishX; // dừng đúng giữa dải vàng
+  const hitbox = balloonHitbox(balloon);
+
+  // Giỏ chạm đất NẰM TRỌN trong sân bưu cục → đáp thành công, giao thư
+  // (kiểm tra trước va chạm, vì chạm đất ở chỗ khác mới là vỡ)
+  if (touchesGround(hitbox) && isOverLandingPad(level, hitbox)) {
+    keepInsideScreen(balloon); // đặt giỏ nằm ngay trên mặt đất
     invincible = false;
     deliveredTimer = 0;
     state = 'delivered';
+    return;
+  }
+
+  // Bay vượt qua bưu cục mà không đáp → được đi tiếp, nhưng thư chưa giao
+  if (passedLandingPad(level, hitbox)) {
+    invincible = false;
+    state = 'missed';
     return;
   }
 
@@ -176,7 +189,7 @@ function update(dt) {
     return;
   }
 
-  const hit = findCollision(level, balloonHitbox(balloon));
+  const hit = findCollision(level, hitbox);
   if (hit) crash(hit);
 }
 
@@ -195,7 +208,7 @@ function draw() {
   drawClouds(ctx, level);
   drawObstacles(ctx, level);
   drawGround(ctx, level);
-  drawFinish(ctx, level);
+  drawPostOffice(ctx, level);
 
   if (state === 'crashed') {
     drawBurst(ctx, balloon, Math.min(crashTimer, CONFIG.revive.burstTime));
@@ -208,9 +221,12 @@ function draw() {
     drawBalloon(ctx, balloon, invincible && blinkOff);
   }
 
-  if (state !== 'ready' && state !== 'delivered') drawProgressBar(ctx, levelProgress(level));
+  if (state !== 'ready' && !endPanelVisible()) drawProgressBar(ctx, levelProgress(level));
   if (state === 'ready') drawReadyScreen(ctx);
-  if (deliveredPanelVisible()) drawDeliveredPanel(ctx, level.data.name, CONFIG.revive.perLevel - revivesLeft);
+  if (state === 'delivered' && endPanelVisible()) {
+    drawDeliveredPanel(ctx, level.data.name, CONFIG.revive.perLevel - revivesLeft);
+  }
+  if (state === 'missed') drawMissedPanel(ctx);
   if (crashMenuVisible()) drawCrashMenu(ctx, revivesLeft);
   if (state === 'rewinding') drawRewindingText(ctx);
   if (state === 'resume') drawResumeText(ctx);

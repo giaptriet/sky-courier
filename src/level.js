@@ -82,58 +82,66 @@ function rectHitsRect(a, b) {
   return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
-// ---------- Khu vực nhận thư (đích) ----------
+// ---------- Sân bưu cục (đích) ----------
+// Cuối chặng có một sân bưu cục trên mặt đất (dữ liệu: level.data.landing).
+//   - Giỏ chạm đất mà NẰM TRỌN trong sân → đáp thành công, giao thư.
+//   - Giỏ chạm đất ngoài sân (kể cả lấn một phần ra ngoài) → vỡ như đâm đất bình thường.
+//   - Bay vượt qua sân mà không đáp → "bay qua bưu cục": được đi tiếp, nhưng thư chưa giao.
 
-// Đã bay tới khu vực nhận thư chưa? (tâm khinh khí cầu chạm giữa dải vàng)
-export function reachedFinish(level) {
-  return level.distance >= level.data.finishX;
+// Vị trí của giỏ tính theo quãng đường trong chặng (không phải trên màn hình)
+function basketSpan(level, hitbox) {
+  const left = level.distance + (hitbox.basket.x - CONFIG.balloon.startX);
+  return { left, right: left + hitbox.basket.w };
 }
 
-// Tiến độ chặng: 0 = vừa xuất phát, 1 = tới khu vực nhận thư
+// Giỏ có đang chạm mặt đất không.
+// Dùng đáy giỏ THẬT (không thu nhỏ như vùng va chạm) để khinh khí cầu đang nằm trên đất
+// (ví dụ lúc bất tử) vẫn được tính là đã đáp.
+export function touchesGround(hitbox) {
+  return hitbox.basket.y + CONFIG.balloon.basketHeight >= groundTop() - 0.01;
+}
+
+// Giỏ có nằm trọn trong sân bưu cục không
+export function isOverLandingPad(level, hitbox) {
+  const pad = level.data.landing;
+  const { left, right } = basketSpan(level, hitbox);
+  return left >= pad.x && right <= pad.x + pad.width;
+}
+
+// Đã bay vượt qua sân bưu cục chưa
+export function passedLandingPad(level, hitbox) {
+  const pad = level.data.landing;
+  return basketSpan(level, hitbox).left > pad.x + pad.width + CONFIG.level.passMargin;
+}
+
+// Tiến độ chặng: 0 = vừa xuất phát, 1 = tới giữa sân bưu cục
 export function levelProgress(level) {
-  return Math.min(1, level.distance / level.data.finishX);
+  const pad = level.data.landing;
+  return Math.min(1, level.distance / (pad.x + pad.width / 2));
 }
 
-// Vị trí khe nhận thư trên hòm thư (tọa độ màn hình) — để vẽ lá thư bay vào
-export function mailboxSlot(level) {
-  const x = toScreenX(level, level.data.finishX) + MAILBOX_OFFSET;
-  return { x: x + 9, y: groundTop() - MAILBOX_HEIGHT + 8 };
-}
-
-const MAILBOX_OFFSET = 52;  // hòm thư nằm bên phải dải vàng một chút
 const MAILBOX_HEIGHT = 48;
 
-// Vẽ dải vàng "nhận thư", hòm thư và tòa bưu điện
-export function drawFinish(ctx, level) {
+// Hòm thư đứng ngay bên phải sân. Trả về vị trí khe bỏ thư (tọa độ màn hình)
+function mailboxX(level) {
+  const pad = level.data.landing;
+  return toScreenX(level, pad.x + pad.width) + 8;
+}
+export function mailboxSlot(level) {
+  return { x: mailboxX(level) + 9, y: groundTop() - MAILBOX_HEIGHT + 8 };
+}
+
+// Vẽ tòa bưu cục, sân đáp có vạch, biển "ĐÁP Ở ĐÂY" và hòm thư
+export function drawPostOffice(ctx, level) {
   const c = CONFIG.colors;
-  const zoneW = CONFIG.level.deliveryZoneWidth;
+  const pad = level.data.landing;
   const ground = groundTop();
-  const cx = toScreenX(level, level.data.finishX); // giữa dải vàng
-  if (cx - zoneW > CONFIG.worldWidth) return;      // còn ở xa, chưa cần vẽ
+  const sx = toScreenX(level, pad.x);
+  if (sx > CONFIG.worldWidth || sx + pad.width + 40 < 0) return; // ngoài màn hình
 
-  // Dải vàng từ trời xuống đất, hai mép nét đứt
-  ctx.fillStyle = c.deliveryZone;
-  ctx.fillRect(cx - zoneW / 2, 0, zoneW, ground);
-  ctx.strokeStyle = c.deliveryZoneEdge;
-  ctx.lineWidth = 2;
-  ctx.setLineDash([8, 8]);
-  ctx.beginPath();
-  ctx.moveTo(cx - zoneW / 2, 0);
-  ctx.lineTo(cx - zoneW / 2, ground);
-  ctx.moveTo(cx + zoneW / 2, 0);
-  ctx.lineTo(cx + zoneW / 2, ground);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = c.title;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.font = 'bold 13px system-ui, sans-serif';
-  ctx.fillText('NHẬN', cx, 60);
-  ctx.fillText('THƯ', cx, 76);
-
-  // Tòa bưu điện bên phải dải vàng
-  const bx = cx + 75;
-  const bw = 140;
+  // Tòa bưu cục (phía sau sân; khinh khí cầu bay ngang qua phía trước, không va chạm)
+  const bx = sx + 10;
+  const bw = pad.width - 20;
   const bh = 150;
   const by = ground - bh;
   ctx.fillStyle = c.postOfficeWall;
@@ -145,16 +153,44 @@ export function drawFinish(ctx, level) {
   ctx.lineTo(bx + bw + 10, by);
   ctx.closePath();
   ctx.fill();
-  ctx.fillStyle = c.postOfficeRoof;
-  ctx.fillRect(bx + 15, by + 15, bw - 30, 26);
+  ctx.fillRect(bx + 12, by + 15, bw - 24, 26);
   ctx.fillStyle = c.postOfficeSign;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   ctx.font = 'bold 14px system-ui, sans-serif';
-  ctx.fillText('BƯU ĐIỆN', bx + bw / 2, by + 29);
+  ctx.fillText('BƯU CỤC', bx + bw / 2, by + 29);
   ctx.fillStyle = c.postOfficeDoor;
   ctx.fillRect(bx + bw / 2 - 18, ground - 56, 36, 56);
 
-  // Hòm thư đỏ
-  const mx = cx + MAILBOX_OFFSET;
+  // Sân đáp: dải vàng có vạch chéo trên mặt đất, hai đầu có cọc
+  ctx.fillStyle = c.landingPad;
+  ctx.fillRect(sx, ground, pad.width, 10);
+  ctx.fillStyle = c.landingPadStripe;
+  for (let x = sx + 4; x < sx + pad.width - 8; x += 16) {
+    ctx.beginPath();
+    ctx.moveTo(x, ground + 10);
+    ctx.lineTo(x + 6, ground);
+    ctx.lineTo(x + 10, ground);
+    ctx.lineTo(x + 4, ground + 10);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.fillRect(sx - 3, ground - 18, 4, 18);
+  ctx.fillRect(sx + pad.width - 1, ground - 18, 4, 18);
+
+  // Biển chỉ dẫn phía trên sân
+  ctx.fillStyle = c.title;
+  ctx.font = 'bold 15px system-ui, sans-serif';
+  ctx.fillText('ĐÁP Ở ĐÂY', sx + pad.width / 2, 62);
+  ctx.beginPath();
+  ctx.moveTo(sx + pad.width / 2 - 10, 76);
+  ctx.lineTo(sx + pad.width / 2 + 10, 76);
+  ctx.lineTo(sx + pad.width / 2, 90);
+  ctx.closePath();
+  ctx.fill();
+
+  // Hòm thư đỏ bên phải sân
+  const mx = mailboxX(level);
   ctx.fillStyle = c.mailbox;
   ctx.fillRect(mx, ground - MAILBOX_HEIGHT, 18, MAILBOX_HEIGHT);
   ctx.beginPath();

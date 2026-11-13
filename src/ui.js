@@ -4,7 +4,7 @@
 //   - Màn hình chờ: tiêu đề + hướng dẫn
 //   - Khung "Khinh khí cầu vỡ rồi!" với nút Hồi sinh / Chơi lại
 //   - Dòng chữ khi đang tua lùi và khi chờ bay tiếp
-//   - Thanh tiến độ chặng và khung "Đã giao thư!"
+//   - Thanh tiến độ chặng, khung "Đã giao thư!" và khung "Bay qua bưu cục rồi!"
 
 import { CONFIG } from './config.js';
 
@@ -114,7 +114,23 @@ export function drawDeliveredPanel(ctx, levelName, revivesUsed) {
   drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonPrimary, c.buttonPrimaryText);
 }
 
-export function hitDeliveredPanel(x, y) {
+// Khi bay vượt qua sân bưu cục mà không đáp
+export function drawMissedPanel(ctx) {
+  const c = CONFIG.colors;
+  ctx.fillStyle = c.panel;
+  roundedRect(ctx, 30, 190, W - 60, 195, 16);
+  ctx.fill();
+
+  setText(ctx, c.panelText, 'bold 24px');
+  ctx.fillText('Bay qua bưu cục rồi!', W / 2, 225);
+  setText(ctx, c.panelText, '14px');
+  ctx.fillText('Thư chưa được giao. Bạn được đi tiếp,', W / 2, 256);
+  ctx.fillText('nhưng chuyến này không được tính điểm.', W / 2, 276);
+  drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonPrimary, c.buttonPrimaryText);
+}
+
+// Nút "Chơi lại chặng" (dùng chung cho cả 2 khung kết thúc chặng)
+export function hitReplayButton(x, y) {
   return inside(replayButton, x, y);
 }
 

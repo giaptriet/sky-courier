@@ -27,6 +27,14 @@ Mục tiêu trước mắt: làm **prototype nhỏ** để kiểm chứng điề
   đòi hỏi kỹ năng hơn. Kiểu giữ đã bỏ khỏi code (còn trong lịch sử git nếu cần xem lại).
 - Các con số (trọng lực, lực phụt, tốc độ) vẫn **[CÒN MỞ]**, chỉnh trong `src/config.js` sau khi chơi thử.
 
+## 2c. Giao thư ở bưu cục — [ĐÃ CHỐT 2026-11-13]
+
+- Giao thư ở bưu cục cũng là một thử thách: phải **đáp khinh khí cầu xuống đúng sân bưu cục** mới tính là giao thư thành công.
+- **Rơi (chạm đất) ngoài sân bưu cục → khinh khí cầu vỡ** (như đâm đất thông thường, có thể dùng hồi sinh).
+- **Bay vượt qua bưu cục** mà không đáp → **được đi tiếp**, nhưng thư chưa được giao.
+- [ĐỊNH HƯỚNG] Khi có hệ thống điểm: chuyến bay qua bưu cục mà không đáp **không được tính điểm**.
+- *Cách làm tạm của prototype (chưa phải quyết định)*: giỏ phải nằm **trọn** trong sân khi chạm đất (lấn mép = vỡ); chưa xét tốc độ đáp (đáp mạnh hay nhẹ đều được); tòa bưu cục chỉ là cảnh nền, không va chạm; vì mới có 1 chặng nên "đi tiếp" hiện chỉ có nút "Chơi lại chặng".
+
 ## 3. Hồi sinh
 
 ### 3.1 Luật đầy đủ — [ĐÃ CHỐT, làm sau prototype]
@@ -66,7 +74,7 @@ Chỉ mở rộng khi prototype cho thấy trải nghiệm cốt lõi thực s�
 ## 6. Còn mở — [CÒN MỞ]
 
 1. Xuất bản chính thức (app trên kho ứng dụng hay chỉ web). *Prototype đã chốt: game web, chơi bằng trình duyệt điện thoại, đăng qua GitHub Pages.*
-2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh. Prototype tạm dùng điều kiện hoàn thành: bay tới **khu vực nhận thư** (dải vàng trước bưu điện) ở cuối chặng → "Đã giao thư!" (người dùng yêu cầu 2026-11-13). Có cần bay đúng độ cao/thả thư chính xác hay không: chưa quyết.*
+2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh. Điều kiện hoàn thành: đáp đúng sân bưu cục (mục 2c). Có xét tốc độ đáp hay không: chưa quyết.*
 3. Số giây tua lùi khi hồi sinh *(tạm 5 giây)*.
 4. Thiết kế cụ thể 5 chặng huấn luyện và nội dung chặng 1 *(bản nháp: `docs/TRAINING_LEVELS.md`, chờ duyệt)*.
 5. Thời điểm đưa kho hồi sinh, vật phẩm, bưu thiếp, nâng cấp, khu vực mới, thử thách ngày vào game.

@@ -30,7 +30,8 @@
 - **Bố cục**:
   1. 0–10 s: trời trống, chỉ có mặt đất và giới hạn trần. Hướng dẫn: *"Chạm để làm nóng khí, bay lên"*.
   2. 10–20 s: vài cột thấp/cao **khe rất rộng**, cùng một độ cao → làm quen việc giữ độ cao.
-  3. 20–30 s: khoảng trống → bưu điện (đích).
+  3. 20–27 s: khoảng trống → **hạ xuống đáp vào sân bưu cục** (đích). Có biển "ĐÁP Ở ĐÂY".
+- **Lưu ý (2026-11-13)**: luật đáp ở bưu cục khiến chặng 1 dạy **2 điều** (điều khiển + đáp). Cần xem khi chơi thử người mới có bị quá tải không; nếu có, cân nhắc nới sân rộng hơn ở chặng 1.
 - **Mục tiêu kiểm chứng**: người chưa chơi bao giờ có tự hiểu cách điều khiển (chạm = phụt lửa) không, và có thấy quá khó không.
 
 ### Chặng 2 — "Phố mái nhà"
