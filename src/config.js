@@ -61,7 +61,9 @@ export const CONFIG = {
     envelopeLine: '#9aa7b4',
     flameOuter: '#ff9f1c',    // ngọn lửa đèn khò
     flameInner: '#ffe066',
-    stormCloud: '#5f6b7a',    // mây giông (chướng ngại phía trên)
+    stormCloud: '#4a5361',       // mây đen (chướng ngại phía trên)
+    stormCloudShadow: '#363d48', // phần tối dưới đáy mây
+    stormCloudLight: '#525b69',  // vệt sáng nhẹ trên đỉnh mây
     towerWall: '#d9c6a5',     // tháp (chướng ngại phía dưới)
     towerRoof: '#b5523b',
     towerWindow: '#6b5a45',

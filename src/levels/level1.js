@@ -11,7 +11,7 @@
 //               Phải ĐÁP khinh khí cầu xuống trong sân mới giao được thư.
 //               Chạm đất ngoài sân = vỡ. Bay vượt qua sân = được đi tiếp nhưng thư chưa giao.
 //               Sân càng hẹp càng khó đáp (giỏ khinh khí cầu rộng khoảng 20).
-// Mỗi chướng ngại gồm mây giông phía trên và một tòa tháp phía dưới, chừa khe ở giữa.
+// Mỗi chướng ngại gồm đám mây đen phía trên và một tòa tháp phía dưới, chừa khe ở giữa.
 
 export const LEVEL_1 = {
   name: 'Chuyến thư đầu tiên',

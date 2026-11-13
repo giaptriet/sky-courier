@@ -47,26 +47,63 @@ export function findCollision(level, hitbox) {
   for (let i = 0; i < obstacles.length; i++) {
     const ob = obstacles[i];
     const sx = toScreenX(level, ob.x);
-    if (sx > CONFIG.worldWidth || sx + w < 0) continue; // ở xa, bỏ qua
+    if (sx - 20 > CONFIG.worldWidth || sx + w + 20 < 0) continue; // ở xa, bỏ qua (mây tràn ra 2 bên ~15)
 
     const gapTop = ob.gapCenter - ob.gapSize / 2;
     const gapBottom = ob.gapCenter + ob.gapSize / 2;
-    const parts = [
-      { x: sx, y: 0, w, h: gapTop },                           // mây giông phía trên
-      { x: sx, y: gapBottom, w, h: groundTop() - gapBottom },  // tháp phía dưới
-    ];
-    for (const part of parts) {
-      if (circleHitsRect(circle, part) || rectHitsRect(basket, part)) {
+    // Mây đen phía trên: kiểm tra từng cục mây tròn (đúng với hình vẽ)
+    for (const puff of stormCloudPuffs(ob, sx, w, gapTop)) {
+      if (circleHitsCircle(circle, puff) || circleHitsRect(puff, basket)) {
         return { kind: 'obstacle', index: i };
       }
+    }
+
+    // Tháp phía dưới
+    const tower = { x: sx, y: gapBottom, w, h: groundTop() - gapBottom };
+    if (circleHitsRect(circle, tower) || rectHitsRect(basket, tower)) {
+      return { kind: 'obstacle', index: i };
     }
   }
   return null;
 }
 
-// Quãng đường (distance) mà tại đó khinh khí cầu chạm tới mép trước của chướng ngại số index
+// Quãng đường (distance) mà tại đó khinh khí cầu chạm tới mép trước của chướng ngại số index.
+// Mây đen hơi tràn ra hai bên chướng ngại, nên lấy mép trái của cục mây xa nhất.
 export function obstacleContactDistance(level, index) {
-  return level.data.obstacles[index].x - CONFIG.balloon.radius;
+  const ob = level.data.obstacles[index];
+  const w = CONFIG.level.obstacleWidth;
+  const gapTop = ob.gapCenter - ob.gapSize / 2;
+  let leftEdge = 0;
+  for (const puff of stormCloudPuffs(ob, 0, w, gapTop)) {
+    leftEdge = Math.min(leftEdge, puff.x - puff.r);
+  }
+  return ob.x + leftEdge - CONFIG.balloon.radius;
+}
+
+// Đám mây đen gồm nhiều "cục mây" tròn chồng lên nhau, từ mép trên màn hình xuống tới khe.
+// Vị trí các cục mây tính bằng công thức cố định theo ob.x (không ngẫu nhiên),
+// nên mỗi đám mây trông hơi khác nhau nhưng lần chơi nào cũng giống hệt.
+//   sx = mép trái chướng ngại trên màn hình, w = bề ngang, bottom = mép trên của khe bay
+function stormCloudPuffs(ob, sx, w, bottom) {
+  const puffs = [];
+  const big = w * 0.42;
+
+  // Hàng dưới cùng: 3 cục to; cục giữa chạm đúng mép trên của khe
+  puffs.push({ x: sx + w * 0.12, y: bottom - big * 0.85 - 6, r: big * 0.85 });
+  puffs.push({ x: sx + w * 0.5, y: bottom - big, r: big });
+  puffs.push({ x: sx + w * 0.88, y: bottom - big * 0.8 - 4, r: big * 0.8 });
+
+  // Các hàng phía trên: mỗi hàng 2 cục, lệch trái/phải khác nhau để mép mây gồ ghề
+  let row = 0;
+  for (let y = bottom - big * 1.9; y > -big; y -= 30) {
+    const wobble = (((ob.x / 10 + row * 7) % 5) - 2) * 3; // −6..+6, cố định theo vị trí
+    const r1 = big * (0.8 + ((row * 3) % 4) * 0.06);
+    const r2 = big * (0.75 + ((row * 5) % 4) * 0.06);
+    puffs.push({ x: sx + w * 0.28 + wobble, y, r: r1 });
+    puffs.push({ x: sx + w * 0.72 - wobble * 0.5, y: y - 10, r: r2 });
+    row++;
+  }
+  return puffs;
 }
 
 function circleHitsRect(c, r) {
@@ -76,6 +113,13 @@ function circleHitsRect(c, r) {
   const dx = c.x - nearestX;
   const dy = c.y - nearestY;
   return dx * dx + dy * dy < c.r * c.r;
+}
+
+function circleHitsCircle(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  const rr = a.r + b.r;
+  return dx * dx + dy * dy < rr * rr;
 }
 
 function rectHitsRect(a, b) {
@@ -229,27 +273,44 @@ export function drawObstacles(ctx, level) {
 
   for (const ob of level.data.obstacles) {
     const sx = toScreenX(level, ob.x);
-    if (sx + w < 0 || sx > CONFIG.worldWidth) continue; // ngoài màn hình thì không vẽ
+    if (sx + w + 20 < 0 || sx - 20 > CONFIG.worldWidth) continue; // ngoài màn hình thì không vẽ
 
     const gapTop = ob.gapCenter - ob.gapSize / 2;
     const gapBottom = ob.gapCenter + ob.gapSize / 2;
 
-    drawStormCloud(ctx, sx, w, gapTop);
+    drawStormCloud(ctx, stormCloudPuffs(ob, sx, w, gapTop));
     drawTower(ctx, sx, w, gapBottom, ground);
   }
 }
 
-// Phía trên khe: mây giông, từ mép trên màn hình xuống tới khe (đáy mây gợn tròn)
-function drawStormCloud(ctx, x, w, bottom) {
-  const bump = w * 0.3; // bán kính 3 gợn tròn ở đáy mây
-  ctx.fillStyle = CONFIG.colors.stormCloud;
-  ctx.fillRect(x, 0, w, bottom - bump);
+// Phía trên khe: đám mây đen, vẽ từ các cục mây tròn (xem stormCloudPuffs)
+function drawStormCloud(ctx, puffs) {
+  const c = CONFIG.colors;
+
+  // Lớp bóng tối hơn, lệch xuống dưới một chút → mây có khối
+  ctx.fillStyle = c.stormCloudShadow;
   ctx.beginPath();
-  for (const part of [0.22, 0.5, 0.78]) {
-    const cx = x + w * part;
-    const cy = part === 0.5 ? bottom - bump : bottom - bump * 1.3; // gợn giữa thấp nhất
-    ctx.moveTo(cx + bump, cy);
-    ctx.arc(cx, cy, bump, 0, Math.PI * 2);
+  for (const p of puffs) {
+    ctx.moveTo(p.x + p.r, p.y + 3);
+    ctx.arc(p.x, p.y + 3, p.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
+
+  // Lớp mây chính
+  ctx.fillStyle = c.stormCloud;
+  ctx.beginPath();
+  for (const p of puffs) {
+    ctx.moveTo(p.x + p.r, p.y);
+    ctx.arc(p.x, p.y, p.r * 0.94, 0, Math.PI * 2);
+  }
+  ctx.fill();
+
+  // Vệt sáng nhỏ trên đỉnh mỗi cục mây
+  ctx.fillStyle = c.stormCloudLight;
+  ctx.beginPath();
+  for (const p of puffs) {
+    ctx.moveTo(p.x - p.r * 0.15 + p.r * 0.35, p.y - p.r * 0.35);
+    ctx.arc(p.x - p.r * 0.15, p.y - p.r * 0.35, p.r * 0.35, 0, Math.PI * 2);
   }
   ctx.fill();
 }
