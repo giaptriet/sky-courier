@@ -45,6 +45,7 @@ export const CONFIG = {
     darkCloudSize: 34,      // độ to của mây đen phía trên khe (rộng ≈ 4 lần, cao ≈ 2,2 lần số này)
     groundHeight: 40,       // độ dày mặt đất ở đáy màn hình
     cloudSpeedFactor: 0.3,  // mây ở xa trôi chậm bằng mấy phần so với cảnh gần
+    hintShowDistance: 270,  // lời hướng dẫn trong chặng hiện bao lâu (270 ≈ 3 giây bay)
     passMargin: 60,         // bay quá mép phải sân bưu cục bao xa thì tính là "đã bay qua bưu cục"
     letterFlyTime: 0.9,     // lá thư bay từ giỏ vào hòm thư mất bao lâu (giây)
   },

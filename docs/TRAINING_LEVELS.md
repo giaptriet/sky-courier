@@ -18,10 +18,18 @@
 | Chặng | Dạy điều gì | Độ dài tạm | Độ khó |
 |---|---|---|---|
 | 1 | Điều khiển cơ bản + đáp xuống bưu cục | ~20 giây | Rất dễ |
-| 2 | Né chướng ngại, va chạm là thua | ~40 giây | Dễ |
-| 3 | Căn nhịp: khe bay đổi độ cao liên tục | ~45 giây | Dễ – vừa |
-| 4 | Hồi sinh tua lùi | ~45 giây | Vừa |
-| 5 | Chọn tuyến + tổng hợp | ~60 giây | Vừa |
+| 2 | Né chướng ngại, va chạm là vỡ | ~26 giây | Dễ |
+| 3 | Căn nhịp: khe bay đổi độ cao liên tục | ~39 giây | Dễ – vừa |
+| 4 | Hồi sinh tua lùi | ~33 giây | Vừa |
+| 5 | Chọn tuyến + tổng hợp | ~34 giây | Vừa |
+
+*Độ dài thực tế (2026-11-13) ngắn hơn bản nháp ban đầu (40/45/45/60 giây), theo hướng người dùng đã chọn ở chặng 1: đoạn trống ngắn, chặng gọn.*
+
+### Giới hạn vật lý cần nhớ khi thiết kế chặng (rút ra khi chạy thử tự động)
+- Mỗi cú chạm đẩy khinh khí cầu lên ~56 đơn vị, và nó **còn bay lên ~0,9 giây** sau cú chạm. Không thể nhích lên một chút nhỏ hơn.
+- Vì vậy mọi lối đi phải chừa cho khinh khí cầu (~85) **cộng thêm khoảng lên xuống** ≥ ~60 → khe/lối đi nên ≥ ~160 (lối đi dài) hoặc ≥ ~175 (khe ngắn, phải căn chuẩn).
+- Khe cao → khe thấp: sau khi qua tháp cần đủ chỗ để rơi xuống trước đám mây kế tiếp. Với độ lệch ~100, chướng ngại nên cách nhau **≥ ~220–230**.
+- Sân bưu cục hẹp quá (< ~140) thì rất khó canh lúc hạ.
 
 ## Chi tiết
 
@@ -37,23 +45,27 @@
 - **Lưu ý (2026-11-13)**: luật đáp ở bưu cục khiến chặng 1 dạy **2 điều** (điều khiển + đáp). Cần xem khi chơi thử người mới có bị quá tải không; nếu có, cân nhắc nới sân rộng hơn ở chặng 1.
 - **Mục tiêu kiểm chứng**: người chưa chơi bao giờ có tự hiểu cách điều khiển (chạm = phụt lửa) không, và có thấy quá khó không.
 
-### Chặng 2 — "Phố mái nhà"
-- **Dạy**: chạm chướng ngại = thua (hiện "Chơi lại").
-- **Bố cục**: cụm chướng ngại khe rộng, độ cao đổi **từ từ** (cao → thấp → cao). Giữa các cụm có khoảng nghỉ.
-- **Hướng dẫn**: *"Tránh va vào mái nhà và cột"*.
+### Chặng 2 — "Phố mái nhà" *(đã làm: `src/levels/level2.js`)*
+- **Dạy**: va vào mây đen hay mái tháp = vỡ.
+- **Bố cục**: cụm 1 khe hạ dần (250 → 300 → 350), nghỉ ~4 s, cụm 2 khe nâng dần (360 → 300 → 250), cách nhau 250, khe 220. Sân bưu cục rộng 160.
+- **Hướng dẫn**: *"Va vào mây đen hay mái tháp là vỡ!"*.
 
-### Chặng 3 — "Nhịp gió nhẹ" *(tên tạm, không có cơ chế gió)*
+### Chặng 3 — "Nhịp bay" *(đã làm: `src/levels/level3.js`)*
 - **Dạy**: căn nhịp — khe bay đổi độ cao **nhanh hơn** và gần nhau hơn, phải chuẩn bị trước.
-- **Bố cục**: 3 đoạn zigzag ngắn, mỗi đoạn khó hơn một chút, xen khoảng nghỉ. Khe **không hẹp hơn** chặng 2 (độ khó đến từ nhịp, không phải từ khe hẹp).
-- **Hướng dẫn**: *"Nhìn trước chướng ngại tiếp theo"*.
+- **Bố cục**: 3 đoạn zigzag, xen khoảng nghỉ ~3 s: đoạn 1 cách 240 lệch 80 → đoạn 2 cách 240 lệch 100 → đoạn 3 cách 230 lệch 90. Khe 220–230 (**không hẹp hơn** chặng 2). Sân rộng 150.
+- **Hướng dẫn**: *"Nhìn trước chướng ngại tiếp theo!"*.
+- *Bản đầu (cách 200–220, lệch 120) chạy thử không qua được → đã giãn ra.*
 
-### Chặng 4 — "Thêm một cơ hội"
+### Chặng 4 — "Thêm một cơ hội" *(đã làm: `src/levels/level4.js`)*
 - **Dạy**: hồi sinh tua lùi.
-- **Bố cục**: nửa đầu dễ (ôn tập), rồi **một đoạn khó rõ ràng** mà nhiều người sẽ đâm lần đầu. Khi đâm:
+- **Bố cục thực tế**: 3 chướng ngại ôn tập (khe 230), nghỉ ~5 s có lời nhắc *"Đoạn khó! Nếu vỡ, bạn được hồi sinh 1 lần."*, rồi đoạn khó 5 chướng ngại **khe hẹp 180**, cách 230, lệch ~95. Sân rộng 140.
+- **Bố cục (thiết kế gốc)**: nửa đầu dễ (ôn tập), rồi **một đoạn khó rõ ràng** mà nhiều người sẽ đâm lần đầu. Khi đâm:
   hiện giải thích *"Hồi sinh: quay lại 5 giây trước. Bạn bất tử cho tới khi gặp lại chướng ngại vừa đâm — lúc đó phải tự vượt qua"*.
-- Nếu người chơi vượt qua mà không đâm: hiện một dòng nhắc ngắn về hồi sinh ở màn hoàn thành (không ép phải chết).
+- Nếu người chơi vượt qua mà không đâm: hiện một dòng nhắc ngắn về hồi sinh ở màn hoàn thành (không ép phải chết). *(Chưa làm riêng; màn hoàn thành hiện "Không cần hồi sinh!".)*
 
-### Chặng 5 — "Hai đường bay"
+### Chặng 5 — "Hai đường bay" *(đã làm: `src/levels/level5.js`)*
+- **Bố cục thực tế**: 4 chướng ngại ôn tập, rồi **ngã rẽ**: một dãy 3 đám mây đen lơ lửng (đáy ở 320) chia trời làm hai — **đường trên** rộng (~245), **đường dưới** hẹp (khe 320–480, giữa dãy mây và dãy tháp). Hai đường nhập lại, 2 chướng ngại dễ, sân rộng 130. Chạy thử tự động: **cả hai đường đều qua được**.
+- *Bản đầu đường dưới chỉ rộng 130 → không thể bay qua (mỗi cú chạm đẩy lên ~56) → đã nới ra 160.*
 - **Dạy**: chọn tuyến — có đoạn chia **đường trên an toàn** và **đường dưới hẹp hơn nhưng ngắn hơn** *(sau này đặt vật phẩm hồi sinh ở tuyến mạo hiểm; prototype chưa có vật phẩm nên tuyến mạo hiểm chưa có phần thưởng)*.
 - **Bố cục**: ôn lại chặng 2–3, một ngã rẽ, đoạn kết dễ → đích. Là "bài thi tốt nghiệp".
 - **Hướng dẫn**: *"Chọn đường bạn tự tin nhất"*.

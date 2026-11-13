@@ -19,15 +19,16 @@ import {
 import { createInput, takePresses } from './input.js';
 import {
   drawReadyScreen, drawCrashMenu, hitCrashMenu, drawRewindingText, drawResumeText,
-  drawProgressBar, drawDeliveredPanel, drawMissedPanel, hitReplayButton,
+  drawProgressBar, drawDeliveredPanel, drawMissedPanel, hitEndPanel, drawHint,
 } from './ui.js';
 import {
   createLevel, updateLevel, drawClouds, drawObstacles, drawGround,
   findCollision, obstacleContactDistance,
   drawPostOffice, touchesGround, isOverLandingPad, passedLandingPad, levelProgress, mailboxSlot,
+  currentHint,
 } from './level.js';
 import { createHistory, clearHistory, recordFrame, startRewind, stepRewind } from './rewind.js';
-import { LEVEL_1 } from './levels/level1.js';
+import { LEVELS } from './levels/index.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
@@ -57,8 +58,15 @@ window.addEventListener('resize', resize);
 resize();
 
 // ---------- Trạng thái game ----------
+// Chặng bắt đầu: mặc định chặng 1. Để thử nhanh một chặng, thêm ?chang=3 vào cuối đường link.
+function startLevelIndex() {
+  const n = parseInt(new URLSearchParams(window.location.search).get('chang'), 10);
+  return n >= 1 && n <= LEVELS.length ? n - 1 : 0;
+}
+
 const balloon = createBalloon();
-const level = createLevel(LEVEL_1);
+let levelIndex = startLevelIndex();
+const level = createLevel(LEVELS[levelIndex]);
 const history = createHistory();
 
 let state = 'ready';
@@ -90,7 +98,9 @@ const input = createInput(canvas, (x, y) => {
     return true;
   }
   if (endPanelVisible()) {
-    if (hitReplayButton(x, y)) restartLevel();
+    const choice = hitEndPanel(x, y);
+    if (choice === 'next') goToNextLevel();
+    if (choice === 'replay') restartLevel();
     return true;
   }
   return state === 'crashed' || state === 'rewinding' || state === 'delivered';
@@ -111,6 +121,13 @@ function revive() {
   revivesLeft -= 1;
   startRewind(history);
   state = 'rewinding';
+}
+
+// Sang chặng tiếp theo (hết chặng thì quay về chặng 1). Lượt hồi sinh được cấp lại.
+function goToNextLevel() {
+  levelIndex = (levelIndex + 1) % LEVELS.length;
+  level.data = LEVELS[levelIndex];
+  restartLevel();
 }
 
 function restartLevel() {
@@ -145,8 +162,8 @@ function update(dt) {
 
   if (state === 'delivered' || state === 'missed') {
     deliveredTimer += dt;
-    // Trên máy tính: phím Space = Chơi lại chặng
-    if (presses > 0 && endPanelVisible()) restartLevel();
+    // Trên máy tính: phím Space = nút chính (Chặng tiếp theo / Đi tiếp)
+    if (presses > 0 && endPanelVisible()) goToNextLevel();
     return;
   }
 
@@ -222,11 +239,14 @@ function draw() {
   }
 
   if (state !== 'ready' && !endPanelVisible()) drawProgressBar(ctx, levelProgress(level));
-  if (state === 'ready') drawReadyScreen(ctx);
+  const hint = currentHint(level);
+  if (hint && (state === 'flying' || state === 'resume')) drawHint(ctx, hint);
+  if (state === 'ready') drawReadyScreen(ctx, levelIndex + 1, LEVELS.length, level.data);
+  const isLast = levelIndex === LEVELS.length - 1;
   if (state === 'delivered' && endPanelVisible()) {
-    drawDeliveredPanel(ctx, level.data.name, CONFIG.revive.perLevel - revivesLeft);
+    drawDeliveredPanel(ctx, level.data.name, CONFIG.revive.perLevel - revivesLeft, isLast);
   }
-  if (state === 'missed') drawMissedPanel(ctx);
+  if (state === 'missed') drawMissedPanel(ctx, isLast);
   if (crashMenuVisible()) drawCrashMenu(ctx, revivesLeft);
   if (state === 'rewinding') drawRewindingText(ctx);
   if (state === 'resume') drawResumeText(ctx);
@@ -270,5 +290,6 @@ requestAnimationFrame(loop);
 window.skyCourier = {
   balloon, level, history,
   getState: () => state,
+  getLevelIndex: () => levelIndex,
   getInfo: () => ({ revivesLeft, invincible, invincibleUntil }),
 };

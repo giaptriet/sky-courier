@@ -17,6 +17,7 @@
 
 export const LEVEL_1 = {
   name: 'Chuyến thư đầu tiên',
+  intro: 'Bay lượn qua khe giữa mây đen và tháp, rồi đáp xuống bưu cục.',
 
   obstacles: [
     // 0–4 giây đầu: trời trống ngắn để làm quen việc chạm

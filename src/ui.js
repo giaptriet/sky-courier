@@ -4,7 +4,8 @@
 //   - Màn hình chờ: tiêu đề + hướng dẫn
 //   - Khung "Khinh khí cầu vỡ rồi!" với nút Hồi sinh / Chơi lại
 //   - Dòng chữ khi đang tua lùi và khi chờ bay tiếp
-//   - Thanh tiến độ chặng, khung "Đã giao thư!" và khung "Bay qua bưu cục rồi!"
+//   - Thanh tiến độ chặng, lời hướng dẫn trong chặng
+//   - Khung kết thúc chặng: "Đã giao thư!" / "Bay qua bưu cục rồi!" với nút Chặng tiếp theo / Chơi lại
 
 import { CONFIG } from './config.js';
 
@@ -19,13 +20,30 @@ const restartTopButton = { x: (W - BUTTON_W) / 2, y: 300, w: BUTTON_W, h: BUTTON
 const restartBottomButton = { x: (W - BUTTON_W) / 2, y: 362, w: BUTTON_W, h: BUTTON_H };
 
 // ---------- Màn hình chờ ----------
-export function drawReadyScreen(ctx) {
-  setText(ctx, CONFIG.colors.title, 'bold 36px');
-  ctx.fillText('Sky Courier', W / 2, H * 0.12);
-  setText(ctx, CONFIG.colors.title, '18px');
-  ctx.fillText('Khinh khí cầu giao thư', W / 2, H * 0.12 + 36);
-  setText(ctx, CONFIG.colors.title, '16px');
-  ctx.fillText('Chạm để bắt đầu · mỗi lần chạm = phụt lửa', W / 2, 140);
+// levelNumber bắt đầu từ 1; levelData = dữ liệu chặng (lấy name, intro)
+export function drawReadyScreen(ctx, levelNumber, levelCount, levelData) {
+  const c = CONFIG.colors.title;
+  setText(ctx, c, 'bold 34px');
+  ctx.fillText('Sky Courier', W / 2, 60);
+  setText(ctx, c, '16px');
+  ctx.fillText('Khinh khí cầu giao thư', W / 2, 92);
+
+  setText(ctx, c, 'bold 20px');
+  ctx.fillText(`Chặng ${levelNumber}/${levelCount}: ${levelData.name}`, W / 2, 132);
+  setText(ctx, c, '14px');
+  wrapText(ctx, levelData.intro || '', W / 2, 158, W - 40, 19);
+  setText(ctx, c, 'bold 15px');
+  ctx.fillText('Chạm để bắt đầu · mỗi lần chạm = phụt lửa', W / 2, 210);
+}
+
+// ---------- Lời hướng dẫn trong chặng (nằm trên dải cỏ ở đáy màn hình) ----------
+export function drawHint(ctx, text) {
+  const c = CONFIG.colors;
+  ctx.fillStyle = c.panel;
+  roundedRect(ctx, 14, H - 78, W - 28, 32, 10);
+  ctx.fill();
+  setText(ctx, c.panelText, 'bold 14px');
+  ctx.fillText(text, W / 2, H - 61);
 }
 
 // ---------- Khung khi vỡ ----------
@@ -97,44 +115,71 @@ export function drawProgressBar(ctx, progress) {
   ctx.fillText('📮', x + w + 6, y + 4);
 }
 
-// ---------- Khung "Đã giao thư!" ----------
-const replayButton = { x: (W - BUTTON_W) / 2, y: 310, w: BUTTON_W, h: BUTTON_H };
+// ---------- Khung kết thúc chặng ----------
+// Hai nút: nút chính (Chặng tiếp theo / Đi tiếp / Về chặng 1) và nút phụ (Chơi lại chặng)
+const nextButton = { x: (W - BUTTON_W) / 2, y: 310, w: BUTTON_W, h: BUTTON_H };
+const replayButton = { x: (W - BUTTON_W) / 2, y: 372, w: BUTTON_W, h: BUTTON_H };
 
-export function drawDeliveredPanel(ctx, levelName, revivesUsed) {
+// isLast = đây là chặng cuối cùng
+export function drawDeliveredPanel(ctx, levelName, revivesUsed, isLast) {
   const c = CONFIG.colors;
-  ctx.fillStyle = c.panel;
-  roundedRect(ctx, 30, 190, W - 60, 195, 16);
-  ctx.fill();
-
-  setText(ctx, c.panelText, 'bold 26px');
-  ctx.fillText('Đã giao thư! ✉️', W / 2, 228);
+  drawEndPanelBox(ctx);
+  setText(ctx, c.panelText, isLast ? 'bold 21px' : 'bold 26px');
+  ctx.fillText(isLast ? 'Hoàn thành huấn luyện! 🎉' : 'Đã giao thư! ✉️', W / 2, 228);
   setText(ctx, c.panelText, '15px');
   ctx.fillText(`Hoàn thành: ${levelName}`, W / 2, 260);
   ctx.fillText(revivesUsed > 0 ? `Đã dùng ${revivesUsed} lượt hồi sinh` : 'Không cần hồi sinh!', W / 2, 282);
-  drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonPrimary, c.buttonPrimaryText);
+  drawEndButtons(ctx, isLast ? 'Về chặng 1' : 'Chặng tiếp theo');
 }
 
 // Khi bay vượt qua sân bưu cục mà không đáp
-export function drawMissedPanel(ctx) {
+export function drawMissedPanel(ctx, isLast) {
   const c = CONFIG.colors;
-  ctx.fillStyle = c.panel;
-  roundedRect(ctx, 30, 190, W - 60, 195, 16);
-  ctx.fill();
-
+  drawEndPanelBox(ctx);
   setText(ctx, c.panelText, 'bold 24px');
   ctx.fillText('Bay qua bưu cục rồi!', W / 2, 225);
   setText(ctx, c.panelText, '14px');
   ctx.fillText('Thư chưa được giao. Bạn được đi tiếp,', W / 2, 256);
   ctx.fillText('nhưng chuyến này không được tính điểm.', W / 2, 276);
-  drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonPrimary, c.buttonPrimaryText);
+  drawEndButtons(ctx, isLast ? 'Về chặng 1' : 'Đi tiếp');
 }
 
-// Nút "Chơi lại chặng" (dùng chung cho cả 2 khung kết thúc chặng)
-export function hitReplayButton(x, y) {
-  return inside(replayButton, x, y);
+function drawEndPanelBox(ctx) {
+  ctx.fillStyle = CONFIG.colors.panel;
+  roundedRect(ctx, 30, 190, W - 60, 250, 16);
+  ctx.fill();
+}
+
+function drawEndButtons(ctx, nextLabel) {
+  const c = CONFIG.colors;
+  drawButton(ctx, nextButton, nextLabel, c.buttonPrimary, c.buttonPrimaryText);
+  drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonSecondary, c.buttonSecondaryText);
+}
+
+// Cú nhấn trúng nút nào của khung kết thúc chặng: 'next', 'replay' hoặc null
+export function hitEndPanel(x, y) {
+  if (inside(nextButton, x, y)) return 'next';
+  if (inside(replayButton, x, y)) return 'replay';
+  return null;
 }
 
 // ---------- Hàm phụ ----------
+// Viết chữ dài, tự xuống dòng khi quá rộng
+function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+  let line = '';
+  for (const word of text.split(' ')) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxWidth && line) {
+      ctx.fillText(line, x, y);
+      line = word;
+      y += lineHeight;
+    } else {
+      line = test;
+    }
+  }
+  if (line) ctx.fillText(line, x, y);
+}
+
 function setText(ctx, color, size) {
   ctx.fillStyle = color;
   ctx.textAlign = 'center';

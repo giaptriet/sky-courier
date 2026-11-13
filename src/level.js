@@ -49,34 +49,62 @@ export function findCollision(level, hitbox) {
     const sx = toScreenX(level, ob.x);
     if (sx - CLOUD_MARGIN > CONFIG.worldWidth || sx + w + CLOUD_MARGIN < 0) continue; // ở xa, bỏ qua
 
-    const gapTop = ob.gapCenter - ob.gapSize / 2;
-    const gapBottom = ob.gapCenter + ob.gapSize / 2;
-    // Mây đen phía trên khe: kiểm tra từng hình bầu dục của đám mây (đúng với hình vẽ)
-    for (const e of darkCloudShape(sx, w, gapTop)) {
-      if (circleHitsEllipse(circle, e) || rectHitsEllipse(basket, e)) {
-        return { kind: 'obstacle', index: i };
+    const { cloudBottom, towerTop } = obstacleParts(ob);
+
+    // Mây đen: kiểm tra từng hình bầu dục của đám mây (đúng với hình vẽ)
+    if (cloudBottom !== null) {
+      for (const e of darkCloudShape(sx, w, cloudBottom)) {
+        if (circleHitsEllipse(circle, e) || rectHitsEllipse(basket, e)) {
+          return { kind: 'obstacle', index: i };
+        }
       }
     }
 
-    // Tháp phía dưới
-    const tower = { x: sx, y: gapBottom, w, h: groundTop() - gapBottom };
-    if (circleHitsRect(circle, tower) || rectHitsRect(basket, tower)) {
-      return { kind: 'obstacle', index: i };
+    // Tháp: từ đỉnh mái xuống tới mặt đất
+    if (towerTop !== null) {
+      const tower = { x: sx, y: towerTop, w, h: groundTop() - towerTop };
+      if (circleHitsRect(circle, tower) || rectHitsRect(basket, tower)) {
+        return { kind: 'obstacle', index: i };
+      }
     }
   }
   return null;
 }
 
+// Các phần của một chướng ngại. Có 3 kiểu (xem giải thích trong src/levels/index.js):
+//   cổng (mặc định): { x, gapCenter, gapSize } → mây đen phía trên khe + tháp phía dưới khe
+//   chỉ mây:         { type: 'cloud', x, bottom } → một đám mây đen lơ lửng, đáy ở độ cao bottom
+//   chỉ tháp:        { type: 'tower', x, top }    → một tòa tháp, đỉnh mái ở độ cao top
+// Trả về { cloudBottom, towerTop }; phần nào không có thì là null.
+function obstacleParts(ob) {
+  if (ob.type === 'cloud') return { cloudBottom: ob.bottom, towerTop: null };
+  if (ob.type === 'tower') return { cloudBottom: null, towerTop: ob.top };
+  return { cloudBottom: ob.gapCenter - ob.gapSize / 2, towerTop: ob.gapCenter + ob.gapSize / 2 };
+}
+
 // Quãng đường (distance) mà tại đó khinh khí cầu chạm tới mép trước của chướng ngại số index.
-// Mây đen rộng hơn tháp, nên lấy mép trái của đám mây.
+// Mây đen rộng hơn tháp, nên nếu có mây thì lấy mép trái của đám mây.
 export function obstacleContactDistance(level, index) {
   const ob = level.data.obstacles[index];
-  const gapTop = ob.gapCenter - ob.gapSize / 2;
+  const { cloudBottom } = obstacleParts(ob);
   let leftEdge = 0;
-  for (const e of darkCloudShape(0, CONFIG.level.obstacleWidth, gapTop)) {
-    leftEdge = Math.min(leftEdge, e.x - e.rx);
+  if (cloudBottom !== null) {
+    for (const e of darkCloudShape(0, CONFIG.level.obstacleWidth, cloudBottom)) {
+      leftEdge = Math.min(leftEdge, e.x - e.rx);
+    }
   }
   return ob.x + leftEdge - CONFIG.balloon.radius;
+}
+
+// Lời hướng dẫn ngắn đang cần hiện (hoặc null).
+// Dữ liệu chặng: hints: [{ x, text }] → hiện từ lúc bay tới x, trong khoảng hintShowDistance.
+export function currentHint(level) {
+  for (const hint of level.data.hints || []) {
+    if (level.distance >= hint.x && level.distance < hint.x + CONFIG.level.hintShowDistance) {
+      return hint.text;
+    }
+  }
+  return null;
 }
 
 // Mây đen tràn ra hai bên tháp bao xa (dùng để biết khi nào chướng ngại đã ra khỏi màn hình)
@@ -275,11 +303,9 @@ export function drawObstacles(ctx, level) {
     const sx = toScreenX(level, ob.x);
     if (sx + w + CLOUD_MARGIN < 0 || sx - CLOUD_MARGIN > CONFIG.worldWidth) continue; // ngoài màn hình thì không vẽ
 
-    const gapTop = ob.gapCenter - ob.gapSize / 2;
-    const gapBottom = ob.gapCenter + ob.gapSize / 2;
-
-    drawDarkCloud(ctx, darkCloudShape(sx, w, gapTop));
-    drawTower(ctx, sx, w, gapBottom, ground);
+    const { cloudBottom, towerTop } = obstacleParts(ob);
+    if (cloudBottom !== null) drawDarkCloud(ctx, darkCloudShape(sx, w, cloudBottom));
+    if (towerTop !== null) drawTower(ctx, sx, w, towerTop, ground);
   }
 }
 

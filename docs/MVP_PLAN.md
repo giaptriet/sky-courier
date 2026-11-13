@@ -50,6 +50,16 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 
 👉 **Điểm dừng kiểm chứng #2**: tua lùi có dễ hiểu không? Chọn số giây tua lùi chính thức.
 
+## Giai đoạn 3b — Chặng 2–5 *(người dùng yêu cầu làm trước khi chơi thử)*
+
+| # | Việc | Người dùng kiểm tra bằng mắt |
+|---|------|------------------------------|
+| 3b.1 | ✅ Danh sách chặng, nút "Chặng tiếp theo" / "Đi tiếp", hết chặng 5 → "Về chặng 1"; lượt hồi sinh cấp lại mỗi chặng | Giao thư xong bấm "Chặng tiếp theo" → thấy "Chặng 2/5" |
+| 3b.2 | ✅ Lời hướng dẫn ngắn trong chặng (dải tối ở đáy màn hình) | Thấy câu nhắc khi bay tới chỗ có yếu tố mới |
+| 3b.3 | ✅ Kiểu chướng ngại mới: chỉ mây / chỉ tháp (dùng cho ngã rẽ chặng 5) | Chặng 5 thấy dãy mây đen chia 2 đường |
+| 3b.4 | ✅ Dữ liệu chặng 2–5; chạy thử tự động: mọi chặng đều qua được bằng kỹ năng | Chơi lần lượt 5 chặng |
+| 3b.5 | ✅ Thử nhanh 1 chặng bằng đường link: thêm `?chang=3` | Mở link có `?chang=3` → vào thẳng chặng 3 |
+
 ## Giai đoạn 4 — Chơi thử thật trên điện thoại
 
 | # | Việc | Người dùng kiểm tra bằng mắt |
