@@ -17,17 +17,17 @@ export const LEVEL_1 = {
   name: 'Chuyến thư đầu tiên',
 
   obstacles: [
-    // 0–5 giây đầu: trời trống ngắn để làm quen việc chạm
-    // (chướng ngại đầu tiên hiện ra ở mép phải màn hình khoảng giây thứ 2)
+    // 0–4 giây đầu: trời trống ngắn để làm quen việc chạm
+    // (chướng ngại đầu tiên hiện ra ở mép phải màn hình khoảng giây thứ 1)
 
-    // 5–16 giây: vài chướng ngại khe rất rộng, cùng một độ cao → tập giữ độ cao
-    { x: 500,  gapCenter: 320, gapSize: 250 },
-    { x: 800,  gapCenter: 320, gapSize: 250 },
-    { x: 1100, gapCenter: 320, gapSize: 250 },
-    { x: 1400, gapCenter: 320, gapSize: 250 },
+    // 4–15 giây: vài chướng ngại khe rất rộng, cùng một độ cao → tập giữ độ cao
+    { x: 410,  gapCenter: 320, gapSize: 250 },
+    { x: 710,  gapCenter: 320, gapSize: 250 },
+    { x: 1010, gapCenter: 320, gapSize: 250 },
+    { x: 1310, gapCenter: 320, gapSize: 250 },
 
-    // 16–19 giây: khoảng trống ngắn, vừa đủ để hạ dần xuống sân bưu cục
+    // 15–18 giây: khoảng trống ngắn, vừa đủ để hạ dần xuống sân bưu cục
   ],
 
-  landing: { x: 1700, width: 150 }, // ≈ 19 giây bay; sân rộng 150 ≈ 1,7 giây để đáp
+  landing: { x: 1610, width: 150 }, // ≈ 18 giây bay; sân rộng 150 ≈ 1,7 giây để đáp
 };
