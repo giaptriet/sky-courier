@@ -11,7 +11,9 @@
 //               Phải ĐÁP khinh khí cầu xuống trong sân mới giao được thư.
 //               Chạm đất ngoài sân = vỡ. Bay vượt qua sân = được đi tiếp nhưng thư chưa giao.
 //               Sân càng hẹp càng khó đáp (giỏ khinh khí cầu rộng khoảng 20).
-// Mỗi chướng ngại gồm đám mây đen phía trên và một tòa tháp phía dưới, chừa khe ở giữa.
+// Mỗi chướng ngại gồm một đám mây đen lơ lửng phía trên và một tòa tháp phía dưới, chừa khe ở giữa.
+// Phía trên mây đen vẫn là trời trống. Mây đen cao khoảng 75, khinh khí cầu cao khoảng 85:
+// khe càng cao thì khoảng trống phía trên mây càng hẹp → bay vượt lên trên rất khó qua.
 
 export const LEVEL_1 = {
   name: 'Chuyến thư đầu tiên',
@@ -20,11 +22,11 @@ export const LEVEL_1 = {
     // 0–4 giây đầu: trời trống ngắn để làm quen việc chạm
     // (chướng ngại đầu tiên hiện ra ở mép phải màn hình khoảng giây thứ 1)
 
-    // 4–15 giây: vài chướng ngại khe rất rộng, cùng một độ cao → tập giữ độ cao
-    { x: 410,  gapCenter: 320, gapSize: 250 },
-    { x: 710,  gapCenter: 320, gapSize: 250 },
-    { x: 1010, gapCenter: 320, gapSize: 250 },
-    { x: 1310, gapCenter: 320, gapSize: 250 },
+    // 4–15 giây: 4 chướng ngại khe rộng, xen kẽ CAO – THẤP → bay theo đường lượn sóng
+    { x: 410,  gapCenter: 260, gapSize: 230 }, // cao: mây sát trần, không vượt lên trên được
+    { x: 710,  gapCenter: 350, gapSize: 230 }, // thấp: phía trên mây còn chỗ, nhưng sẽ khó qua cái sau
+    { x: 1010, gapCenter: 260, gapSize: 230 }, // cao
+    { x: 1310, gapCenter: 350, gapSize: 230 }, // thấp → sau đó hạ dần xuống bưu cục
 
     // 15–18 giây: khoảng trống ngắn, vừa đủ để hạ dần xuống sân bưu cục
   ],

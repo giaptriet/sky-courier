@@ -41,7 +41,8 @@ export const CONFIG = {
   // --- Chặng chơi ---
   level: {
     scrollSpeed: 90,        // cảnh vật trôi bao nhiêu đơn vị mỗi giây (càng lớn bay càng nhanh)
-    obstacleWidth: 56,      // bề ngang mỗi chướng ngại
+    obstacleWidth: 56,      // bề ngang mỗi tháp (chướng ngại phía dưới)
+    darkCloudSize: 34,      // độ to của mây đen phía trên khe (rộng ≈ 4 lần, cao ≈ 2,2 lần số này)
     groundHeight: 40,       // độ dày mặt đất ở đáy màn hình
     cloudSpeedFactor: 0.3,  // mây ở xa trôi chậm bằng mấy phần so với cảnh gần
     passMargin: 60,         // bay quá mép phải sân bưu cục bao xa thì tính là "đã bay qua bưu cục"
@@ -61,9 +62,7 @@ export const CONFIG = {
     envelopeLine: '#9aa7b4',
     flameOuter: '#ff9f1c',    // ngọn lửa đèn khò
     flameInner: '#ffe066',
-    stormCloud: '#4a5361',       // mây đen (chướng ngại phía trên)
-    stormCloudShadow: '#363d48', // phần tối dưới đáy mây
-    stormCloudLight: '#525b69',  // vệt sáng nhẹ trên đỉnh mây
+    darkCloud: '#2f343c',     // mây đen (chướng ngại phía trên khe)
     towerWall: '#d9c6a5',     // tháp (chướng ngại phía dưới)
     towerRoof: '#b5523b',
     towerWindow: '#6b5a45',
