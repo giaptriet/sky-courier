@@ -44,6 +44,8 @@ export const CONFIG = {
     obstacleWidth: 56,      // bề ngang mỗi chướng ngại
     groundHeight: 40,       // độ dày mặt đất ở đáy màn hình
     cloudSpeedFactor: 0.3,  // mây ở xa trôi chậm bằng mấy phần so với cảnh gần
+    deliveryZoneWidth: 80,  // bề ngang khu vực nhận thư (dải vàng trước bưu điện)
+    letterFlyTime: 0.9,     // lá thư bay từ giỏ vào hòm thư mất bao lâu (giây)
   },
 
   // --- Màu sắc (tạm thời, sẽ thay bằng hình vẽ sau) ---
@@ -66,7 +68,16 @@ export const CONFIG = {
     ground: '#7fa65a',        // mặt đất
     groundStripe: '#6a8f48',
     cloud: 'rgba(255, 255, 255, 0.7)',
-    panel: 'rgba(27, 42, 58, 0.85)',   // khung thông báo khi vỡ
+    deliveryZone: 'rgba(255, 214, 80, 0.35)', // khu vực nhận thư
+    deliveryZoneEdge: '#e0a800',
+    postOfficeWall: '#f3e3c3',          // bưu điện
+    postOfficeRoof: '#2f6f8f',
+    postOfficeDoor: '#7a5230',
+    postOfficeSign: '#ffffff',
+    mailbox: '#d64545',                 // hòm thư
+    progressBack: 'rgba(27, 42, 58, 0.25)', // thanh tiến độ
+    progressFill: '#1b2a3a',
+    panel: 'rgba(27, 42, 58, 0.85)',   // khung thông báo (vỡ / giao thư xong)
     panelText: '#ffffff',
     buttonPrimary: '#f6c344',          // nút chính (Hồi sinh)
     buttonPrimaryText: '#1b2a3a',

@@ -9,18 +9,21 @@
 //   'crashed'   — vừa vỡ: hiệu ứng vỡ, rồi hiện nút Hồi sinh / Chơi lại
 //   'rewinding' — đang tua lùi (sau khi bấm Hồi sinh)
 //   'resume'    — tua xong, chờ chạm để bay tiếp (đang bất tử)
+//   'delivered' — đã tới khu vực nhận thư: lá thư bay vào hòm thư, rồi hiện "Đã giao thư!"
 
 import { CONFIG } from './config.js';
 import {
-  createBalloon, updateBalloon, drawBalloon, drawBurst, balloonHitbox, keepInsideScreen,
+  createBalloon, updateBalloon, drawBalloon, drawBurst, balloonHitbox, keepInsideScreen, drawLetter,
 } from './balloon.js';
 import { createInput, takePresses } from './input.js';
 import {
   drawReadyScreen, drawCrashMenu, hitCrashMenu, drawRewindingText, drawResumeText,
+  drawProgressBar, drawDeliveredPanel, hitDeliveredPanel,
 } from './ui.js';
 import {
   createLevel, updateLevel, drawClouds, drawObstacles, drawGround,
   findCollision, obstacleContactDistance,
+  drawFinish, reachedFinish, levelProgress, mailboxSlot,
 } from './level.js';
 import { createHistory, clearHistory, recordFrame, startRewind, stepRewind } from './rewind.js';
 import { LEVEL_1 } from './levels/level1.js';
@@ -63,6 +66,12 @@ let crashTimer = 0;       // đã bao lâu kể từ lúc vỡ (giây)
 let invincible = false;   // đang bất tử sau khi hồi sinh?
 let invincibleUntil = 0;  // bay tới quãng đường này thì hết bất tử
 let blinkTimer = 0;       // dùng cho hiệu ứng nhấp nháy
+let deliveredTimer = 0;   // đã bao lâu kể từ lúc tới khu vực nhận thư (giây)
+
+// Khung "Đã giao thư!" hiện sau khi lá thư bay vào hòm thư xong
+function deliveredPanelVisible() {
+  return state === 'delivered' && deliveredTimer >= CONFIG.level.letterFlyTime;
+}
 
 // Khung "vỡ rồi" chỉ hiện sau khi hiệu ứng vỡ chạy xong
 function crashMenuVisible() {
@@ -77,7 +86,11 @@ const input = createInput(canvas, (x, y) => {
     if (choice === 'restart') restartLevel();
     return true;
   }
-  return state === 'crashed' || state === 'rewinding';
+  if (deliveredPanelVisible()) {
+    if (hitDeliveredPanel(x, y)) restartLevel();
+    return true;
+  }
+  return state === 'crashed' || state === 'rewinding' || state === 'delivered';
 });
 
 // ---------- Các hành động ----------
@@ -127,6 +140,13 @@ function update(dt) {
     return;
   }
 
+  if (state === 'delivered') {
+    deliveredTimer += dt;
+    // Trên máy tính: phím Space = Chơi lại chặng
+    if (presses > 0 && deliveredPanelVisible()) restartLevel();
+    return;
+  }
+
   if (state === 'rewinding') {
     if (stepRewind(history, level, balloon)) {
       invincible = true;
@@ -139,6 +159,15 @@ function update(dt) {
   updateLevel(level, dt);
   updateBalloon(balloon, dt, presses);
   recordFrame(history, level, balloon);
+
+  // Tới khu vực nhận thư → hoàn thành chặng
+  if (reachedFinish(level)) {
+    level.distance = level.data.finishX; // dừng đúng giữa dải vàng
+    invincible = false;
+    deliveredTimer = 0;
+    state = 'delivered';
+    return;
+  }
 
   if (invincible && level.distance >= invincibleUntil) invincible = false;
 
@@ -166,19 +195,37 @@ function draw() {
   drawClouds(ctx, level);
   drawObstacles(ctx, level);
   drawGround(ctx, level);
+  drawFinish(ctx, level);
 
   if (state === 'crashed') {
     drawBurst(ctx, balloon, Math.min(crashTimer, CONFIG.revive.burstTime));
+  } else if (state === 'delivered') {
+    drawBalloon(ctx, balloon, false, false);
+    drawFlyingLetter();
   } else {
     // Nhấp nháy khi bất tử
     const blinkOff = Math.floor(blinkTimer * CONFIG.revive.blinkPerSecond * 2) % 2 === 1;
     drawBalloon(ctx, balloon, invincible && blinkOff);
   }
 
+  if (state !== 'ready' && state !== 'delivered') drawProgressBar(ctx, levelProgress(level));
   if (state === 'ready') drawReadyScreen(ctx);
+  if (deliveredPanelVisible()) drawDeliveredPanel(ctx, level.data.name, CONFIG.revive.perLevel - revivesLeft);
   if (crashMenuVisible()) drawCrashMenu(ctx, revivesLeft);
   if (state === 'rewinding') drawRewindingText(ctx);
   if (state === 'resume') drawResumeText(ctx);
+}
+
+// Lá thư bay theo đường cong từ giỏ khinh khí cầu vào khe hòm thư
+function drawFlyingLetter() {
+  const t = Math.min(1, deliveredTimer / CONFIG.level.letterFlyTime);
+  if (t >= 1) return; // đã vào hòm thư
+  const b = CONFIG.balloon;
+  const from = { x: balloon.x, y: balloon.y + b.radius + b.ropeLength + b.basketHeight / 2 };
+  const to = mailboxSlot(level);
+  const x = from.x + (to.x - from.x) * t;
+  const y = from.y + (to.y - from.y) * t - Math.sin(t * Math.PI) * 60; // vồng lên một chút
+  drawLetter(ctx, x, y, 1.6);
 }
 
 // ---------- Vòng lặp với bước thời gian cố định ----------

@@ -66,7 +66,7 @@ Chỉ mở rộng khi prototype cho thấy trải nghiệm cốt lõi thực s�
 ## 6. Còn mở — [CÒN MỞ]
 
 1. Xuất bản chính thức (app trên kho ứng dụng hay chỉ web). *Prototype đã chốt: game web, chơi bằng trình duyệt điện thoại, đăng qua GitHub Pages.*
-2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh.*
+2. Cơ chế điều khiển chính xác, tốc độ, va chạm, độ dài chặng, điều kiện hoàn thành. *Kiểu điều khiển đã chốt: chạm (mục 2b); các con số vẫn đang chỉnh. Prototype tạm dùng điều kiện hoàn thành: bay tới **khu vực nhận thư** (dải vàng trước bưu điện) ở cuối chặng → "Đã giao thư!" (người dùng yêu cầu 2026-11-13). Có cần bay đúng độ cao/thả thư chính xác hay không: chưa quyết.*
 3. Số giây tua lùi khi hồi sinh *(tạm 5 giây)*.
 4. Thiết kế cụ thể 5 chặng huấn luyện và nội dung chặng 1 *(bản nháp: `docs/TRAINING_LEVELS.md`, chờ duyệt)*.
 5. Thời điểm đưa kho hồi sinh, vật phẩm, bưu thiếp, nâng cấp, khu vực mới, thử thách ngày vào game.

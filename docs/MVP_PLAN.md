@@ -36,7 +36,7 @@ Trạng thái: ⬜ chưa làm · 🟨 đang làm · ✅ xong (đã kiểm tra)
 | 2.1 | ✅ Màn hình cuộn ngang, xuất hiện chướng ngại tĩnh (mây giông phía trên + tháp phía dưới); có màn hình chờ "chạm để bắt đầu" | Chướng ngại trôi từ phải sang trái |
 | 2.2 | ✅ Va chạm với chướng ngại / mặt đất / trần → **khinh khí cầu vỡ**, hiện "Chơi lại" *(làm cùng Giai đoạn 3 theo yêu cầu người dùng)* | Đâm vào → dừng, có nút chơi lại |
 | 2.3 | Chặng đọc từ file dữ liệu `src/levels/level1.js` (*file đã tạo ở 2.1; còn lại: người dùng tự sửa thử*) | Sửa vị trí 1 chướng ngại trong file → thấy thay đổi |
-| 2.4 | Đích đến (ví dụ: hộp thư/bưu điện) + thanh tiến độ + màn "Đã giao thư!" | Bay hết chặng → thấy màn hoàn thành |
+| 2.4 | ✅ Khu vực nhận thư (dải vàng + hòm thư + bưu điện) + thanh tiến độ + lá thư bay vào hòm + màn "Đã giao thư!" | Bay hết chặng → thấy màn hoàn thành |
 
 ## Giai đoạn 3 — Hồi sinh tua lùi (phiên bản prototype)
 

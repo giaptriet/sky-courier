@@ -81,7 +81,8 @@ function balloonBottomOffset() {
 
 // Vẽ khinh khí cầu tại vị trí hiện tại.
 // faded = true → vẽ mờ (dùng cho hiệu ứng nhấp nháy khi bất tử)
-export function drawBalloon(ctx, balloon, faded = false) {
+// hasLetter = false → không vẽ phong thư trên giỏ (thư đã giao)
+export function drawBalloon(ctx, balloon, faded = false, hasLetter = true) {
   const b = CONFIG.balloon;
   const c = CONFIG.colors;
   const { x, y } = balloon;
@@ -122,19 +123,7 @@ export function drawBalloon(ctx, balloon, faded = false) {
   ctx.fillRect(x - b.basketWidth / 2, basketTop, b.basketWidth, b.basketHeight);
 
   // --- Phong thư nhỏ gắn trên giỏ (dấu hiệu "giao thư") ---
-  const ew = b.basketWidth * 0.6;
-  const eh = b.basketHeight * 0.55;
-  const ex = x - ew / 2;
-  const ey = basketTop + (b.basketHeight - eh) / 2;
-  ctx.fillStyle = c.envelope;
-  ctx.fillRect(ex, ey, ew, eh);
-  ctx.strokeStyle = c.envelopeLine;
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(ex, ey);
-  ctx.lineTo(x, ey + eh * 0.6);
-  ctx.lineTo(ex + ew, ey);
-  ctx.stroke();
+  if (hasLetter) drawLetter(ctx, x, basketTop + b.basketHeight / 2, 1);
 
   // --- Thân bóng: hình tròn, đáy hơi thon ---
   ctx.save();
@@ -195,4 +184,23 @@ export function drawBurst(ctx, balloon, t) {
   const basketTop = Math.min(y + b.radius + b.ropeLength + fall, groundY - b.basketHeight); // dừng trên mặt đất
   ctx.fillStyle = c.balloonBasket;
   ctx.fillRect(x - b.basketWidth / 2, basketTop, b.basketWidth, b.basketHeight);
+}
+
+// Vẽ một lá thư (phong bì) có tâm tại (cx, cy). size = 1 là cỡ gắn trên giỏ.
+export function drawLetter(ctx, cx, cy, size = 1) {
+  const b = CONFIG.balloon;
+  const c = CONFIG.colors;
+  const ew = b.basketWidth * 0.6 * size;
+  const eh = b.basketHeight * 0.55 * size;
+  const ex = cx - ew / 2;
+  const ey = cy - eh / 2;
+  ctx.fillStyle = c.envelope;
+  ctx.fillRect(ex, ey, ew, eh);
+  ctx.strokeStyle = c.envelopeLine;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(cx, ey + eh * 0.6);
+  ctx.lineTo(ex + ew, ey);
+  ctx.stroke();
 }

@@ -4,6 +4,7 @@
 //   - Màn hình chờ: tiêu đề + hướng dẫn
 //   - Khung "Khinh khí cầu vỡ rồi!" với nút Hồi sinh / Chơi lại
 //   - Dòng chữ khi đang tua lùi và khi chờ bay tiếp
+//   - Thanh tiến độ chặng và khung "Đã giao thư!"
 
 import { CONFIG } from './config.js';
 
@@ -76,6 +77,45 @@ export function drawResumeText(ctx) {
   setText(ctx, CONFIG.colors.title, '15px');
   ctx.fillText('Bạn đang bất tử (nhấp nháy) tới chỗ vừa đâm.', W / 2, 140);
   ctx.fillText('Tới đó phải tự vượt qua!', W / 2, 160);
+}
+
+// ---------- Thanh tiến độ (trên cùng màn hình) ----------
+// progress: 0 = vừa xuất phát, 1 = tới khu vực nhận thư
+export function drawProgressBar(ctx, progress) {
+  const c = CONFIG.colors;
+  const x = 70;
+  const w = W - 140;
+  const y = 18;
+  ctx.fillStyle = c.progressBack;
+  roundedRect(ctx, x, y, w, 8, 4);
+  ctx.fill();
+  ctx.fillStyle = c.progressFill;
+  roundedRect(ctx, x, y, Math.max(8, w * progress), 8, 4);
+  ctx.fill();
+  setText(ctx, c.progressFill, 'bold 12px');
+  ctx.textAlign = 'left';
+  ctx.fillText('📮', x + w + 6, y + 4);
+}
+
+// ---------- Khung "Đã giao thư!" ----------
+const replayButton = { x: (W - BUTTON_W) / 2, y: 310, w: BUTTON_W, h: BUTTON_H };
+
+export function drawDeliveredPanel(ctx, levelName, revivesUsed) {
+  const c = CONFIG.colors;
+  ctx.fillStyle = c.panel;
+  roundedRect(ctx, 30, 190, W - 60, 195, 16);
+  ctx.fill();
+
+  setText(ctx, c.panelText, 'bold 26px');
+  ctx.fillText('Đã giao thư! ✉️', W / 2, 228);
+  setText(ctx, c.panelText, '15px');
+  ctx.fillText(`Hoàn thành: ${levelName}`, W / 2, 260);
+  ctx.fillText(revivesUsed > 0 ? `Đã dùng ${revivesUsed} lượt hồi sinh` : 'Không cần hồi sinh!', W / 2, 282);
+  drawButton(ctx, replayButton, 'Chơi lại chặng', c.buttonPrimary, c.buttonPrimaryText);
+}
+
+export function hitDeliveredPanel(x, y) {
+  return inside(replayButton, x, y);
 }
 
 // ---------- Hàm phụ ----------

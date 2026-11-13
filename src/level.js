@@ -82,6 +82,88 @@ function rectHitsRect(a, b) {
   return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
+// ---------- Khu vực nhận thư (đích) ----------
+
+// Đã bay tới khu vực nhận thư chưa? (tâm khinh khí cầu chạm giữa dải vàng)
+export function reachedFinish(level) {
+  return level.distance >= level.data.finishX;
+}
+
+// Tiến độ chặng: 0 = vừa xuất phát, 1 = tới khu vực nhận thư
+export function levelProgress(level) {
+  return Math.min(1, level.distance / level.data.finishX);
+}
+
+// Vị trí khe nhận thư trên hòm thư (tọa độ màn hình) — để vẽ lá thư bay vào
+export function mailboxSlot(level) {
+  const x = toScreenX(level, level.data.finishX) + MAILBOX_OFFSET;
+  return { x: x + 9, y: groundTop() - MAILBOX_HEIGHT + 8 };
+}
+
+const MAILBOX_OFFSET = 52;  // hòm thư nằm bên phải dải vàng một chút
+const MAILBOX_HEIGHT = 48;
+
+// Vẽ dải vàng "nhận thư", hòm thư và tòa bưu điện
+export function drawFinish(ctx, level) {
+  const c = CONFIG.colors;
+  const zoneW = CONFIG.level.deliveryZoneWidth;
+  const ground = groundTop();
+  const cx = toScreenX(level, level.data.finishX); // giữa dải vàng
+  if (cx - zoneW > CONFIG.worldWidth) return;      // còn ở xa, chưa cần vẽ
+
+  // Dải vàng từ trời xuống đất, hai mép nét đứt
+  ctx.fillStyle = c.deliveryZone;
+  ctx.fillRect(cx - zoneW / 2, 0, zoneW, ground);
+  ctx.strokeStyle = c.deliveryZoneEdge;
+  ctx.lineWidth = 2;
+  ctx.setLineDash([8, 8]);
+  ctx.beginPath();
+  ctx.moveTo(cx - zoneW / 2, 0);
+  ctx.lineTo(cx - zoneW / 2, ground);
+  ctx.moveTo(cx + zoneW / 2, 0);
+  ctx.lineTo(cx + zoneW / 2, ground);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = c.title;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 13px system-ui, sans-serif';
+  ctx.fillText('NHẬN', cx, 60);
+  ctx.fillText('THƯ', cx, 76);
+
+  // Tòa bưu điện bên phải dải vàng
+  const bx = cx + 75;
+  const bw = 140;
+  const bh = 150;
+  const by = ground - bh;
+  ctx.fillStyle = c.postOfficeWall;
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.fillStyle = c.postOfficeRoof;
+  ctx.beginPath();
+  ctx.moveTo(bx - 10, by);
+  ctx.lineTo(bx + bw / 2, by - 40);
+  ctx.lineTo(bx + bw + 10, by);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = c.postOfficeRoof;
+  ctx.fillRect(bx + 15, by + 15, bw - 30, 26);
+  ctx.fillStyle = c.postOfficeSign;
+  ctx.font = 'bold 14px system-ui, sans-serif';
+  ctx.fillText('BƯU ĐIỆN', bx + bw / 2, by + 29);
+  ctx.fillStyle = c.postOfficeDoor;
+  ctx.fillRect(bx + bw / 2 - 18, ground - 56, 36, 56);
+
+  // Hòm thư đỏ
+  const mx = cx + MAILBOX_OFFSET;
+  ctx.fillStyle = c.mailbox;
+  ctx.fillRect(mx, ground - MAILBOX_HEIGHT, 18, MAILBOX_HEIGHT);
+  ctx.beginPath();
+  ctx.arc(mx + 9, ground - MAILBOX_HEIGHT, 9, Math.PI, 0);
+  ctx.fill();
+  ctx.fillStyle = c.title;
+  ctx.fillRect(mx + 3, ground - MAILBOX_HEIGHT + 6, 12, 3); // khe bỏ thư
+}
+
 // ---------- Vẽ ----------
 
 // Mây trang trí ở phía xa. Trôi chậm hơn cảnh gần (hiệu ứng chiều sâu).
