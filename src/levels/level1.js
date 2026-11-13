@@ -28,8 +28,8 @@ export const LEVEL_1 = {
     { x: 1010, gapCenter: 260, gapSize: 230 }, // cao
     { x: 1310, gapCenter: 350, gapSize: 230 }, // thấp → sau đó hạ dần xuống bưu cục
 
-    // 15–18 giây: khoảng trống ngắn, vừa đủ để hạ dần xuống sân bưu cục
+    // 15–19 giây: khoảng trống để hạ dần xuống sân bưu cục
   ],
 
-  landing: { x: 1610, width: 150 }, // ≈ 18 giây bay; sân rộng 150 ≈ 1,7 giây để đáp
+  landing: { x: 1700, width: 150 }, // ≈ 19 giây bay; sân rộng 150 ≈ 1,7 giây để đáp
 };

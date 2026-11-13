@@ -17,7 +17,7 @@
 
 | Chặng | Dạy điều gì | Độ dài tạm | Độ khó |
 |---|---|---|---|
-| 1 | Điều khiển cơ bản + đáp xuống bưu cục | ~19 giây | Rất dễ |
+| 1 | Điều khiển cơ bản + đáp xuống bưu cục | ~20 giây | Rất dễ |
 | 2 | Né chướng ngại, va chạm là thua | ~40 giây | Dễ |
 | 3 | Căn nhịp: khe bay đổi độ cao liên tục | ~45 giây | Dễ – vừa |
 | 4 | Hồi sinh tua lùi | ~45 giây | Vừa |
@@ -32,7 +32,7 @@
   2. 4–15 s: 4 chướng ngại **khe rộng, xen kẽ cao – thấp** → bay theo đường lượn sóng *(người dùng yêu cầu 2026-11-13, thay cho "cùng một độ cao")*.
      Chướng ngại = mây đen lơ lửng phía trên khe (cùng kiểu dáng mây trắng) + tháp phía dưới. Phía trên mây vẫn là trời trống,
      nhưng mây ở khe cao nằm sát trần nên **bay vượt lên trên rất khó qua**.
-  3. 15–18 s: khoảng trống ngắn → **hạ xuống đáp vào sân bưu cục** (đích). Có biển "ĐÁP Ở ĐÂY".
+  3. 15–19 s: khoảng trống (người dùng thêm 1 s, 2026-11-13) → **hạ xuống đáp vào sân bưu cục** (đích). Có biển "ĐÁP Ở ĐÂY".
 - **2026-11-13**: người dùng yêu cầu thu ngắn đoạn trống ở đầu (10 s → 5 s) và trước bưu cục (7 s → 3 s). Chạy thử tự động: cả chặng ~20 s; sau chướng ngại cuối có khoảng 1,4 s để bắt đầu hạ mà vẫn đáp trúng sân. Sau đó thu ngắn thêm đoạn đầu 5 s → 4 s (đoạn trước bưu cục giữ nguyên).
 - **Lưu ý (2026-11-13)**: luật đáp ở bưu cục khiến chặng 1 dạy **2 điều** (điều khiển + đáp). Cần xem khi chơi thử người mới có bị quá tải không; nếu có, cân nhắc nới sân rộng hơn ở chặng 1.
 - **Mục tiêu kiểm chứng**: người chưa chơi bao giờ có tự hiểu cách điều khiển (chạm = phụt lửa) không, và có thấy quá khó không.
