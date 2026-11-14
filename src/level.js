@@ -35,11 +35,11 @@ function toScreenX(level, x) {
 // Kiểm tra khinh khí cầu có đâm vào gì không.
 // hitbox lấy từ balloonHitbox() trong balloon.js.
 // Trả về null nếu không đâm, hoặc { kind, index }:
-//   kind = 'obstacle' (index = số thứ tự chướng ngại trong dữ liệu chặng), 'ground' hoặc 'ceiling'
+//   kind = 'obstacle' (index = số thứ tự chướng ngại trong dữ liệu chặng) hoặc 'ground'
+// (Chạm trần không làm vỡ — xem stopAtCeiling trong balloon.js.)
 export function findCollision(level, hitbox) {
   const { circle, basket } = hitbox;
 
-  if (circle.y - circle.r < 0) return { kind: 'ceiling', index: -1 };
   if (basket.y + basket.h > groundTop()) return { kind: 'ground', index: -1 };
 
   const w = CONFIG.level.obstacleWidth;

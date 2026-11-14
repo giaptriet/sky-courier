@@ -15,6 +15,7 @@
 import { CONFIG } from './config.js';
 import {
   createBalloon, updateBalloon, drawBalloon, drawBurst, balloonHitbox, keepInsideScreen, drawLetter,
+  stopAtCeiling,
 } from './balloon.js';
 import { createInput, takePresses } from './input.js';
 import {
@@ -114,7 +115,7 @@ function crash(hit) {
   crashTimer = 0;
   invincibleUntil = hit.kind === 'obstacle'
     ? obstacleContactDistance(level, hit.index) // gặp lại đúng chướng ngại đó
-    : level.distance;                           // đâm đất/trần: tới đúng chỗ vừa đâm
+    : level.distance;                           // đâm đất: tới đúng chỗ vừa đâm
 }
 
 function revive() {
@@ -178,6 +179,7 @@ function update(dt) {
   // state === 'flying'
   updateLevel(level, dt);
   updateBalloon(balloon, dt, presses);
+  stopAtCeiling(balloon); // chạm trần: bị chặn lại, không vỡ
   recordFrame(history, level, balloon);
 
   const hitbox = balloonHitbox(balloon);

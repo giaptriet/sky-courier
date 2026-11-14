@@ -48,8 +48,9 @@ Mục tiêu trước mắt: làm **prototype nhỏ** để kiểm chứng điề
 - Khi dùng hồi sinh: **tua lại vài giây trước va chạm**.
 - Trong đoạn bay lại người chơi **bất tử** để chuẩn bị; bất tử **kết thúc khi gặp lại đúng chướng ngại đã gây va chạm** — lúc đó phải tự vượt qua.
 - Số giây tua lùi: **[CÒN MỞ]** — giá trị tạm cho prototype: **5 giây** (người dùng đổi từ 3 → 5 ngày 2026-11-07), chốt sau khi chơi thử.
-- Va chạm (chướng ngại, mặt đất, trần) → **khinh khí cầu vỡ** (hiệu ứng vỡ), rồi hỏi "Hồi sinh" hoặc "Chơi lại từ đầu". Hết lượt → chỉ còn "Chơi lại từ đầu" *(người dùng xác nhận 2026-11-07)*.
-- *Cách hiểu tạm của prototype, chưa phải quyết định*: nếu vỡ do đâm **đất/trần** (không có chướng ngại cụ thể), bất tử kết thúc khi bay tới **đúng chỗ đã vỡ**. Sau khi tua xong, game chờ người chơi chạm mới bay tiếp.
+- **Chạm trần (mép trên màn hình) KHÔNG vỡ**: khinh khí cầu chỉ bị chặn lại *(người dùng yêu cầu 2026-11-14)*.
+- Va chạm (chướng ngại, mặt đất) → **khinh khí cầu vỡ** (hiệu ứng vỡ), rồi hỏi "Hồi sinh" hoặc "Chơi lại từ đầu". Hết lượt → chỉ còn "Chơi lại từ đầu" *(người dùng xác nhận 2026-11-07)*.
+- *Cách hiểu tạm của prototype, chưa phải quyết định*: nếu vỡ do đâm **đất** (không có chướng ngại cụ thể), bất tử kết thúc khi bay tới **đúng chỗ đã vỡ**. Sau khi tua xong, game chờ người chơi chạm mới bay tiếp.
 
 ## 4. Phạm vi prototype đầu tiên — [PROTOTYPE]
 

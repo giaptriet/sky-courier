@@ -41,6 +41,15 @@ export function updateBalloon(balloon, dt, presses) {
   balloon.flameTimer = Math.max(0, balloon.flameTimer - dt);
 }
 
+// Trần (mép trên màn hình) KHÔNG làm vỡ: khinh khí cầu chỉ bị chặn lại, không bay cao hơn được.
+export function stopAtCeiling(balloon) {
+  const highestY = CONFIG.balloon.radius; // đỉnh bóng chạm mép trên màn hình
+  if (balloon.y < highestY) {
+    balloon.y = highestY;
+    balloon.vy = Math.max(balloon.vy, 0); // hết đà bay lên, bắt đầu rơi lại
+  }
+}
+
 // Khi đang bất tử: không cho bay ra khỏi màn hình hay chui xuống đất
 export function keepInsideScreen(balloon) {
   const b = CONFIG.balloon;
