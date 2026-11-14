@@ -17,8 +17,8 @@ export const CONFIG = {
   balloon: {
     startX: 110,        // vị trí ngang lúc bắt đầu (lệch trái để sau này nhìn thấy chướng ngại phía trước)
     startY: 260,        // vị trí dọc lúc bắt đầu (0 = mép trên, 640 = mép dưới)
-    gravity: 150,       // trọng lực khi ĐANG BAY LÊN: càng lớn, mỗi lần chạm bay lên càng thấp
-    fallGravity: 400,   // trọng lực khi ĐANG RƠI: càng lớn, càng nhanh đạt tốc độ rơi tối đa
+    gravity: 180,       // trọng lực khi ĐANG BAY LÊN: càng lớn, mỗi lần chạm bay lên càng thấp
+    fallGravity: 480,   // trọng lực khi ĐANG RƠI: càng lớn, càng nhanh đạt tốc độ rơi tối đa
     maxFallSpeed: 140,  // tốc độ rơi tối đa: càng nhỏ, hạ xuống càng nhẹ nhàng
     tapLift: 130,       // mỗi lần chạm đẩy lên mạnh cỡ nào (càng lớn bay lên càng cao)
     flameShowTime: 0.15, // ngọn lửa hiện bao lâu sau mỗi lần phụt (giây)
