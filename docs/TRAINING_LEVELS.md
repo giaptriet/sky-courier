@@ -26,7 +26,7 @@
 *Độ dài thực tế (2026-11-13) ngắn hơn bản nháp ban đầu (40/45/45/60 giây), theo hướng người dùng đã chọn ở chặng 1: đoạn trống ngắn, chặng gọn.*
 
 ### Giới hạn vật lý cần nhớ khi thiết kế chặng (rút ra khi chạy thử tự động)
-- Mỗi cú chạm đẩy khinh khí cầu lên ~47 đơn vị (trước khi tăng trọng lực 1,2 lần ngày 2026-11-14 là ~56), và nó **còn bay lên ~0,7 giây** sau cú chạm. Không thể nhích lên một chút nhỏ hơn.
+- Mỗi cú chạm đẩy khinh khí cầu lên ~39 đơn vị (trọng lực đã tăng 1,2 × 1,2 lần ngày 2026-11-14; ban đầu là ~56), và nó **còn bay lên ~0,6 giây** sau cú chạm. Không thể nhích lên một chút nhỏ hơn.
 - Vì vậy mọi lối đi phải chừa cho khinh khí cầu (~85) **cộng thêm khoảng lên xuống** ≥ ~60 → khe/lối đi nên ≥ ~160 (lối đi dài) hoặc ≥ ~175 (khe ngắn, phải căn chuẩn).
 - Khe cao → khe thấp: sau khi qua tháp cần đủ chỗ để rơi xuống trước đám mây kế tiếp. Với độ lệch ~100, chướng ngại nên cách nhau **≥ ~220–230**.
 - Sân bưu cục hẹp quá (< ~140) thì rất khó canh lúc hạ.
